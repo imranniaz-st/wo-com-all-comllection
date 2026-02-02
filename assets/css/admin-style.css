@@ -1,0 +1,146 @@
+/**
+ * Admin Styles for Marble Collection Display
+ *
+ * @package Marble_Collection_Display
+ */
+
+.mcd-admin-wrapper {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.mcd-admin-main {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mcd-admin-sidebar {
+    flex: 0 0 300px;
+}
+
+.mcd-admin-box {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mcd-admin-box h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2ea3f2;
+    color: #23282d;
+}
+
+.mcd-admin-box ol {
+    padding-left: 20px;
+}
+
+.mcd-admin-box li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.mcd-admin-box code {
+    display: block;
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #0073aa;
+}
+
+.mcd-admin-box p {
+    line-height: 1.6;
+}
+
+/* Settings Form */
+.form-table th {
+    font-weight: 600;
+    color: #23282d;
+}
+
+.form-table td {
+    padding: 15px 10px;
+}
+
+.form-table select,
+.form-table input[type="number"] {
+    min-width: 200px;
+    padding: 5px 10px;
+}
+
+.form-table input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.form-table .description {
+    color: #646970;
+    font-style: italic;
+    margin-top: 8px;
+}
+
+/* Submit Button */
+.submit .button-primary {
+    background: #2ea3f2;
+    border-color: #2ea3f2;
+    text-shadow: none;
+    box-shadow: none;
+}
+
+.submit .button-primary:hover {
+    background: #1f8ad6;
+    border-color: #1f8ad6;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .mcd-admin-wrapper {
+        flex-direction: column;
+    }
+    
+    .mcd-admin-sidebar {
+        flex: 1;
+    }
+}
+
+/* Success Message */
+.updated.mcd-notice {
+    border-left-color: #2ea3f2;
+}
+
+/* Info Box */
+.mcd-info-box {
+    background: #e7f3f8;
+    border-left: 4px solid #2ea3f2;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.mcd-info-box p {
+    margin: 0;
+}
+
+.mcd-info-box strong {
+    color: #2ea3f2;
+}
+
+/* Quick Actions */
+.mcd-quick-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.mcd-quick-actions a {
+    display: inline-block;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.mcd-quick-actions .button {
+    margin-top: 5px;
+}

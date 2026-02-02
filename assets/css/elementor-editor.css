@@ -1,0 +1,18 @@
+/**
+ * Elementor Editor Styles for Marble Collection
+ */
+
+.elementor-editor .mcd-product-item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.elementor-editor .mcd-products-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.elementor-editor .marble-collection-wrapper {
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+}
