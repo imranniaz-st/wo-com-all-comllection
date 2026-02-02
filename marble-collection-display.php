@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Marble Collection Display
- * Plugin URI: https://superstone.ca
+ * Plugin URI: https://github.com/imranniaz-st/wo-com-all-comllection
  * Description: Professional WooCommerce product collection display plugin for marble and stone products with filtering and grid layout
  * Version: 1.0.0
  * Author: SuperStone
