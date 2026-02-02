@@ -76,6 +76,9 @@ class Marble_Collection_Display {
             new MCD_GitHub_Updater(__FILE__);
         }
         
+        // Load frontend display features
+        require_once MCD_PLUGIN_DIR . 'includes/frontend-display.php';
+        
         // Load Elementor support (gracefully if not present)
         add_action('elementor/loaded', array($this, 'load_elementor_support'));
     }
@@ -145,8 +148,27 @@ class Marble_Collection_Display {
             $should_enqueue = true;
         }
         
+        // Always enqueue if any GTA Marble features shortcodes are present
+        $gta_shortcodes = array(
+            'mcd_hero_section',
+            'mcd_kitchen_priority',
+            'mcd_contact_info',
+            'mcd_business_info',
+            'mcd_sticky_collection_bar',
+            'mcd_locations',
+            'mcd_cta_buttons'
+        );
+        
+        foreach ($gta_shortcodes as $shortcode) {
+            if (has_shortcode(get_post()->post_content ?? '', $shortcode)) {
+                $should_enqueue = true;
+                break;
+            }
+        }
+        
         if ($should_enqueue) {
             wp_enqueue_style('marble-collection-style');
+            wp_enqueue_style('mcd-frontend-features', MCD_PLUGIN_URL . 'assets/css/frontend-features.css', array(), MCD_VERSION);
             wp_enqueue_script('marble-collection-script');
             
             // Get responsive column settings
@@ -177,6 +199,7 @@ class Marble_Collection_Display {
             $custom_css .= $this->get_custom_font_css();
             
             wp_add_inline_style('marble-collection-style', $custom_css);
+            wp_add_inline_style('mcd-frontend-features', $custom_css);
             
             wp_localize_script('marble-collection-script', 'mcdAjax', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
