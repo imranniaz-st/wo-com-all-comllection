@@ -4,8 +4,8 @@
  * Plugin URI: https://github.com/imranniaz-st/wo-com-all-comllection
  * Description: Professional WooCommerce product collection display plugin for marble and stone products with filtering and grid layout
  * Version: 1.0.0
- * Author: SuperStone
- * Author URI: https://superstone.ca
+ * Author: Bicodev Ltd 
+ * Author URI: https://Bicodev.com
  * Text Domain: marble-collection
  * Domain Path: /languages
  * Requires at least: 5.8
@@ -70,6 +70,10 @@ class Marble_Collection_Display {
         // Load admin settings
         if (is_admin()) {
             require_once MCD_PLUGIN_DIR . 'includes/admin-settings.php';
+            
+            // Load GitHub updater
+            require_once MCD_PLUGIN_DIR . 'includes/github-updater.php';
+            new MCD_GitHub_Updater(__FILE__);
         }
         
         // Load Elementor support (gracefully if not present)
