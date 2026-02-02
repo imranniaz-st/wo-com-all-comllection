@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - wordpress-publish
+      - bugfix
+  pull_request:
+    branches:
+      - main
+      - wordpress-publish
+      - bugfix
+
+jobs:
+  php-lint:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Lint PHP files
+        run: |
+          find . -type f -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
+  package-zip:
+    name: Package Plugin ZIP
+    runs-on: ubuntu-latest
+    needs: php-lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create ZIP
+        run: |
+          PLUGIN_DIR_NAME="wo-com all comllection"
+          ZIP_NAME="marble-collection-display.zip"
+          mkdir -p build
+          zip -r "build/${ZIP_NAME}" . \
+            -x "./.git/*" \
+            -x "./.github/*" \
+            -x "./build/*" \
+            -x "./node_modules/*" \
+            -x "./vendor/*" \
+            -x "./*.log" \
+            -x "./.env*" \
+            -x "./.vscode/*" \
+            -x "./.idea/*"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: marble-collection-display
+          path: build/*.zip

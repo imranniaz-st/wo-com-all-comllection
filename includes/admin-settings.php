@@ -389,6 +389,25 @@ class MCD_Admin_Settings {
                         <code>[marble_collection category="quartz"]</code><br><br>
                         <code>[marble_collection per_page="32"]</code>
                     </div>
+                    
+                    <div class="mcd-admin-box">
+                        <h3><?php _e('Plugin Updates', 'marble-collection'); ?></h3>
+                        <p><?php _e('Current Version:', 'marble-collection'); ?> <strong><?php echo MCD_VERSION; ?></strong></p>
+                        <p><?php _e('Updates are checked automatically from GitHub.', 'marble-collection'); ?></p>
+                        <p>
+                            <a href="<?php echo admin_url('plugins.php'); ?>" class="button button-secondary">
+                                <?php _e('Check for Updates', 'marble-collection'); ?>
+                            </a>
+                        </p>
+                        <p>
+                            <a href="https://github.com/imranniaz-st/wo-com-all-comllection/releases" target="_blank" class="button button-secondary">
+                                <?php _e('View Releases', 'marble-collection'); ?>
+                            </a>
+                        </p>
+                        <p class="description">
+                            <?php _e('This plugin updates from GitHub, not WordPress.org repository.', 'marble-collection'); ?>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
