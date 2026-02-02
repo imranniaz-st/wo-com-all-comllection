@@ -361,6 +361,32 @@
     display: none !important;
 }
 
+/* Product Footer and View Button */
+.mcd-product-footer {
+    padding: 0 10px 10px;
+}
+
+.mcd-btn-view-product {
+    display: block;
+    width: 100%;
+    padding: 10px 15px !important;
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    text-align: center;
+    border-radius: 3px;
+    font-size: 13px !important;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent !important;
+}
+
+.mcd-btn-view-product:hover {
+    background-color: #333333 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
 /* Color Swatches */
 .mcd-color-swatches {
     display: flex;
@@ -590,6 +616,11 @@
     
     .mcd-product-excerpt {
         display: none !important;
+    }
+    
+    .mcd-btn-view-product {
+        font-size: 11px !important;
+        padding: 8px 12px !important;
     }
     
     .mcd-color-swatches {

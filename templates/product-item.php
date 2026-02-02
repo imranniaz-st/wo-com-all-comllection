@@ -104,4 +104,10 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
         ?>
         
     </a>
+    
+    <div class="mcd-product-footer">
+        <a href="<?php echo esc_url(get_permalink($product->get_id())); ?>" class="mcd-btn mcd-btn-view-product">
+            <?php esc_html_e('View Product', 'collection-for-woo'); ?>
+        </a>
+    </div>
 </li>
