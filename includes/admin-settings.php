@@ -26,8 +26,8 @@ class MCD_Admin_Settings {
      */
     public function add_admin_menu() {
         add_menu_page(
-            __('Marble Collections', 'marble-collection'),
-            __('Marble Collections', 'marble-collection'),
+            __('Marble Collections', 'collection-for-woo'),
+            __('Marble Collections', 'collection-for-woo'),
             'manage_options',
             'marble-collection-settings',
             array($this, 'render_settings_page'),
@@ -37,8 +37,8 @@ class MCD_Admin_Settings {
         
         add_submenu_page(
             'marble-collection-settings',
-            __('Settings', 'marble-collection'),
-            __('Settings', 'marble-collection'),
+            __('Settings', 'collection-for-woo'),
+            __('Settings', 'collection-for-woo'),
             'manage_options',
             'marble-collection-settings',
             array($this, 'render_settings_page')
@@ -49,50 +49,57 @@ class MCD_Admin_Settings {
      * Register settings
      */
     public function register_settings() {
-        register_setting('mcd_settings', 'mcd_collection_page');
-        register_setting('mcd_settings', 'mcd_columns');
-        register_setting('mcd_settings', 'mcd_columns_tablet');
-        register_setting('mcd_settings', 'mcd_columns_mobile');
-        register_setting('mcd_settings', 'mcd_per_page');
-        register_setting('mcd_settings', 'mcd_default_orderby');
-        register_setting('mcd_settings', 'mcd_show_filters');
-        register_setting('mcd_settings', 'mcd_show_search');
-        register_setting('mcd_settings', 'mcd_show_sorting');
-        register_setting('mcd_settings', 'mcd_show_color_swatches');
-        register_setting('mcd_settings', 'mcd_swatch_size_desktop');
-        register_setting('mcd_settings', 'mcd_swatch_size_mobile');
+        $sanitize_int = array($this, 'sanitize_absint');
+        $sanitize_text = array($this, 'sanitize_text');
+        $sanitize_true_false = array($this, 'sanitize_true_false');
+        $sanitize_yes_no = array($this, 'sanitize_yes_no');
+        $sanitize_color = array($this, 'sanitize_color');
+        $sanitize_orderby = array($this, 'sanitize_orderby');
+
+        register_setting('mcd_settings', 'mcd_collection_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_columns', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_columns_tablet', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_columns_mobile', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_per_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_default_orderby', array('sanitize_callback' => $sanitize_orderby));
+        register_setting('mcd_settings', 'mcd_show_filters', array('sanitize_callback' => $sanitize_true_false));
+        register_setting('mcd_settings', 'mcd_show_search', array('sanitize_callback' => $sanitize_true_false));
+        register_setting('mcd_settings', 'mcd_show_sorting', array('sanitize_callback' => $sanitize_true_false));
+        register_setting('mcd_settings', 'mcd_show_color_swatches', array('sanitize_callback' => $sanitize_yes_no));
+        register_setting('mcd_settings', 'mcd_swatch_size_desktop', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_swatch_size_mobile', array('sanitize_callback' => $sanitize_text));
         
         // Font settings
-        register_setting('mcd_settings', 'mcd_title_font');
-        register_setting('mcd_settings', 'mcd_title_size');
-        register_setting('mcd_settings', 'mcd_title_weight');
-        register_setting('mcd_settings', 'mcd_title_color');
-        register_setting('mcd_settings', 'mcd_excerpt_font');
-        register_setting('mcd_settings', 'mcd_excerpt_size');
-        register_setting('mcd_settings', 'mcd_excerpt_weight');
-        register_setting('mcd_settings', 'mcd_excerpt_color');
-        register_setting('mcd_settings', 'mcd_filter_font');
-        register_setting('mcd_settings', 'mcd_filter_size');
-        register_setting('mcd_settings', 'mcd_filter_color');
+        register_setting('mcd_settings', 'mcd_title_font', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_title_size', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_title_weight', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_title_color', array('sanitize_callback' => $sanitize_color));
+        register_setting('mcd_settings', 'mcd_excerpt_font', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_excerpt_size', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_excerpt_weight', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_excerpt_color', array('sanitize_callback' => $sanitize_color));
+        register_setting('mcd_settings', 'mcd_filter_font', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_filter_size', array('sanitize_callback' => $sanitize_text));
+        register_setting('mcd_settings', 'mcd_filter_color', array('sanitize_callback' => $sanitize_color));
         
         // Gallery pages
-        register_setting('mcd_settings', 'mcd_quartz_page');
-        register_setting('mcd_settings', 'mcd_marble_page');
-        register_setting('mcd_settings', 'mcd_granite_page');
-        register_setting('mcd_settings', 'mcd_european_page');
-        register_setting('mcd_settings', 'mcd_onyx_page');
-        register_setting('mcd_settings', 'mcd_sink_page');
+        register_setting('mcd_settings', 'mcd_quartz_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_marble_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_granite_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_european_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_onyx_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_sink_page', array('sanitize_callback' => $sanitize_int));
         
         add_settings_section(
             'mcd_general_section',
-            __('General Settings', 'marble-collection'),
+            __('General Settings', 'collection-for-woo'),
             array($this, 'render_general_section'),
             'mcd_settings'
         );
         
         add_settings_field(
             'mcd_collection_page',
-            __('All Collections Page', 'marble-collection'),
+            __('All Collections Page', 'collection-for-woo'),
             array($this, 'render_page_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -101,14 +108,14 @@ class MCD_Admin_Settings {
         // Gallery Pages Section
         add_settings_section(
             'mcd_gallery_section',
-            __('Gallery Pages', 'marble-collection'),
+            __('Gallery Pages', 'collection-for-woo'),
             array($this, 'render_gallery_section'),
             'mcd_settings'
         );
         
         add_settings_field(
             'mcd_quartz_page',
-            __('Quartz Gallery Page', 'marble-collection'),
+            __('Quartz Gallery Page', 'collection-for-woo'),
             array($this, 'render_quartz_page_field'),
             'mcd_settings',
             'mcd_gallery_section'
@@ -116,7 +123,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_marble_page',
-            __('Marble Gallery Page', 'marble-collection'),
+            __('Marble Gallery Page', 'collection-for-woo'),
             array($this, 'render_marble_page_field'),
             'mcd_settings',
             'mcd_gallery_section'
@@ -124,7 +131,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_granite_page',
-            __('Granite Gallery Page', 'marble-collection'),
+            __('Granite Gallery Page', 'collection-for-woo'),
             array($this, 'render_granite_page_field'),
             'mcd_settings',
             'mcd_gallery_section'
@@ -132,7 +139,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_european_page',
-            __('European Gallery Page', 'marble-collection'),
+            __('European Gallery Page', 'collection-for-woo'),
             array($this, 'render_european_page_field'),
             'mcd_settings',
             'mcd_gallery_section'
@@ -140,7 +147,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_onyx_page',
-            __('Onyx Gallery Page', 'marble-collection'),
+            __('Onyx Gallery Page', 'collection-for-woo'),
             array($this, 'render_onyx_page_field'),
             'mcd_settings',
             'mcd_gallery_section'
@@ -148,7 +155,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_sink_page',
-            __('Sink Gallery Page', 'marble-collection'),
+            __('Sink Gallery Page', 'collection-for-woo'),
             array($this, 'render_sink_page_field'),
             'mcd_settings',
             'mcd_gallery_section'
@@ -156,7 +163,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_collection_page_old',
-            __('Main Collection Page (Legacy)', 'marble-collection'),
+            __('Main Collection Page (Legacy)', 'collection-for-woo'),
             array($this, 'render_page_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -164,7 +171,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_columns',
-            __('Columns (Desktop)', 'marble-collection'),
+            __('Columns (Desktop)', 'collection-for-woo'),
             array($this, 'render_columns_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -172,7 +179,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_columns_tablet',
-            __('Columns (Tablet)', 'marble-collection'),
+            __('Columns (Tablet)', 'collection-for-woo'),
             array($this, 'render_columns_tablet_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -180,7 +187,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_columns_mobile',
-            __('Columns (Mobile)', 'marble-collection'),
+            __('Columns (Mobile)', 'collection-for-woo'),
             array($this, 'render_columns_mobile_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -188,7 +195,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_per_page',
-            __('Products Per Page', 'marble-collection'),
+            __('Products Per Page', 'collection-for-woo'),
             array($this, 'render_per_page_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -196,7 +203,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_default_orderby',
-            __('Default Sorting', 'marble-collection'),
+            __('Default Sorting', 'collection-for-woo'),
             array($this, 'render_orderby_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -204,7 +211,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_show_filters',
-            __('Show Filters', 'marble-collection'),
+            __('Show Filters', 'collection-for-woo'),
             array($this, 'render_filters_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -212,7 +219,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_show_search',
-            __('Show Search', 'marble-collection'),
+            __('Show Search', 'collection-for-woo'),
             array($this, 'render_search_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -220,7 +227,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_show_sorting',
-            __('Show Sorting Dropdown', 'marble-collection'),
+            __('Show Sorting Dropdown', 'collection-for-woo'),
             array($this, 'render_sorting_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -228,7 +235,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_show_color_swatches',
-            __('Show Color Swatches', 'marble-collection'),
+            __('Show Color Swatches', 'collection-for-woo'),
             array($this, 'render_color_swatches_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -236,7 +243,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_swatch_size_desktop',
-            __('Color Swatch Size (Desktop)', 'marble-collection'),
+            __('Color Swatch Size (Desktop)', 'collection-for-woo'),
             array($this, 'render_swatch_size_desktop_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -244,7 +251,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_swatch_size_mobile',
-            __('Color Swatch Size (Mobile)', 'marble-collection'),
+            __('Color Swatch Size (Mobile)', 'collection-for-woo'),
             array($this, 'render_swatch_size_mobile_field'),
             'mcd_settings',
             'mcd_general_section'
@@ -253,7 +260,7 @@ class MCD_Admin_Settings {
         // Font Settings Section
         add_settings_section(
             'mcd_font_section',
-            __('Font Customization', 'marble-collection'),
+            __('Font Customization', 'collection-for-woo'),
             array($this, 'render_font_section'),
             'mcd_settings'
         );
@@ -261,7 +268,7 @@ class MCD_Admin_Settings {
         // Product Title Fonts
         add_settings_field(
             'mcd_title_font',
-            __('Product Title Font', 'marble-collection'),
+            __('Product Title Font', 'collection-for-woo'),
             array($this, 'render_title_font_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -269,7 +276,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_title_size',
-            __('Product Title Size', 'marble-collection'),
+            __('Product Title Size', 'collection-for-woo'),
             array($this, 'render_title_size_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -277,7 +284,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_title_weight',
-            __('Product Title Weight', 'marble-collection'),
+            __('Product Title Weight', 'collection-for-woo'),
             array($this, 'render_title_weight_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -285,7 +292,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_title_color',
-            __('Product Title Color', 'marble-collection'),
+            __('Product Title Color', 'collection-for-woo'),
             array($this, 'render_title_color_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -294,7 +301,7 @@ class MCD_Admin_Settings {
         // Product Description Fonts
         add_settings_field(
             'mcd_excerpt_font',
-            __('Product Description Font', 'marble-collection'),
+            __('Product Description Font', 'collection-for-woo'),
             array($this, 'render_excerpt_font_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -302,7 +309,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_excerpt_size',
-            __('Product Description Size', 'marble-collection'),
+            __('Product Description Size', 'collection-for-woo'),
             array($this, 'render_excerpt_size_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -310,7 +317,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_excerpt_weight',
-            __('Product Description Weight', 'marble-collection'),
+            __('Product Description Weight', 'collection-for-woo'),
             array($this, 'render_excerpt_weight_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -318,7 +325,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_excerpt_color',
-            __('Product Description Color', 'marble-collection'),
+            __('Product Description Color', 'collection-for-woo'),
             array($this, 'render_excerpt_color_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -327,7 +334,7 @@ class MCD_Admin_Settings {
         // Filter Fonts
         add_settings_field(
             'mcd_filter_font',
-            __('Filter & Search Font', 'marble-collection'),
+            __('Filter & Search Font', 'collection-for-woo'),
             array($this, 'render_filter_font_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -335,7 +342,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_filter_size',
-            __('Filter & Search Size', 'marble-collection'),
+            __('Filter & Search Size', 'collection-for-woo'),
             array($this, 'render_filter_size_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -343,7 +350,7 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_filter_color',
-            __('Filter & Search Color', 'marble-collection'),
+            __('Filter & Search Color', 'collection-for-woo'),
             array($this, 'render_filter_color_field'),
             'mcd_settings',
             'mcd_font_section'
@@ -371,41 +378,41 @@ class MCD_Admin_Settings {
                 
                 <div class="mcd-admin-sidebar">
                     <div class="mcd-admin-box">
-                        <h3><?php _e('Quick Setup', 'marble-collection'); ?></h3>
-                        <p><?php _e('To display your marble collection:', 'marble-collection'); ?></p>
+                        <h3><?php esc_html_e('Quick Setup', 'collection-for-woo'); ?></h3>
+                        <p><?php esc_html_e('To display your marble collection:', 'collection-for-woo'); ?></p>
                         <ol>
-                            <li><?php _e('Select a page below or create a new one', 'marble-collection'); ?></li>
-                            <li><?php _e('Configure display settings', 'marble-collection'); ?></li>
-                            <li><?php _e('Save changes', 'marble-collection'); ?></li>
+                            <li><?php esc_html_e('Select a page below or create a new one', 'collection-for-woo'); ?></li>
+                            <li><?php esc_html_e('Configure display settings', 'collection-for-woo'); ?></li>
+                            <li><?php esc_html_e('Save changes', 'collection-for-woo'); ?></li>
                         </ol>
-                        <p><strong><?php _e('Or use shortcode:', 'marble-collection'); ?></strong></p>
+                        <p><strong><?php esc_html_e('Or use shortcode:', 'collection-for-woo'); ?></strong></p>
                         <code>[marble_collection]</code>
                     </div>
                     
                     <div class="mcd-admin-box">
-                        <h3><?php _e('Documentation', 'marble-collection'); ?></h3>
-                        <p><?php _e('Shortcode examples:', 'marble-collection'); ?></p>
+                        <h3><?php esc_html_e('Documentation', 'collection-for-woo'); ?></h3>
+                        <p><?php esc_html_e('Shortcode examples:', 'collection-for-woo'); ?></p>
                         <code>[marble_collection columns="4"]</code><br><br>
                         <code>[marble_collection category="quartz"]</code><br><br>
                         <code>[marble_collection per_page="32"]</code>
                     </div>
                     
                     <div class="mcd-admin-box">
-                        <h3><?php _e('Plugin Updates', 'marble-collection'); ?></h3>
-                        <p><?php _e('Current Version:', 'marble-collection'); ?> <strong><?php echo MCD_VERSION; ?></strong></p>
-                        <p><?php _e('Updates are checked automatically from GitHub.', 'marble-collection'); ?></p>
+                        <h3><?php esc_html_e('Plugin Updates', 'collection-for-woo'); ?></h3>
+                        <p><?php esc_html_e('Current Version:', 'collection-for-woo'); ?> <strong><?php echo esc_html(MCD_VERSION); ?></strong></p>
+                        <p><?php esc_html_e('Updates are checked automatically from GitHub.', 'collection-for-woo'); ?></p>
                         <p>
-                            <a href="<?php echo admin_url('plugins.php'); ?>" class="button button-secondary">
-                                <?php _e('Check for Updates', 'marble-collection'); ?>
+                            <a href="<?php echo esc_url(admin_url('plugins.php')); ?>" class="button button-secondary">
+                                <?php esc_html_e('Check for Updates', 'collection-for-woo'); ?>
                             </a>
                         </p>
                         <p>
                             <a href="https://github.com/imranniaz-st/wo-com-all-comllection/releases" target="_blank" class="button button-secondary">
-                                <?php _e('View Releases', 'marble-collection'); ?>
+                                <?php esc_html_e('View Releases', 'collection-for-woo'); ?>
                             </a>
                         </p>
                         <p class="description">
-                            <?php _e('This plugin updates from GitHub, not WordPress.org repository.', 'marble-collection'); ?>
+                            <?php esc_html_e('This plugin updates from GitHub, not WordPress.org repository.', 'collection-for-woo'); ?>
                         </p>
                     </div>
                 </div>
@@ -418,14 +425,14 @@ class MCD_Admin_Settings {
      * Render general section
      */
     public function render_general_section() {
-        echo '<p>' . __('Configure how your marble collection is displayed.', 'marble-collection') . '</p>';
+        echo '<p>' . esc_html__('Configure how your marble collection is displayed.', 'collection-for-woo') . '</p>';
     }
     
     /**
      * Render gallery section
      */
     public function render_gallery_section() {
-        echo '<p>' . __('Select pages for each gallery type. Each gallery will display only products from its assigned category.', 'marble-collection') . '</p>';
+        echo '<p>' . esc_html__('Select pages for each gallery type. Each gallery will display only products from its assigned category.', 'collection-for-woo') . '</p>';
     }
     
     /**
@@ -436,7 +443,7 @@ class MCD_Admin_Settings {
         $pages = get_pages();
         ?>
         <select name="mcd_collection_page" id="mcd_collection_page">
-            <option value=""><?php _e('-- Select Page --', 'marble-collection'); ?></option>
+            <option value=""><?php esc_html_e('-- Select Page --', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page): ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($page_id, $page->ID); ?>>
                     <?php echo esc_html($page->post_title); ?>
@@ -444,7 +451,7 @@ class MCD_Admin_Settings {
             <?php endforeach; ?>
         </select>
         <p class="description">
-            <?php _e('Select the page where you want to display all collections. The plugin will automatically add the collection display to this page.', 'marble-collection'); ?>
+            <?php esc_html_e('Select the page where you want to display all collections. The plugin will automatically add the collection display to this page.', 'collection-for-woo'); ?>
         </p>
         <?php
     }
@@ -461,7 +468,7 @@ class MCD_Admin_Settings {
             <option value="4" <?php selected($columns, 4); ?>>4</option>
             <option value="5" <?php selected($columns, 5); ?>>5</option>
         </select>
-        <p class="description"><?php _e('Number of product columns on desktop (above 980px)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Number of product columns on desktop (above 980px)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -477,7 +484,7 @@ class MCD_Admin_Settings {
             <option value="3" <?php selected($columns, 3); ?>>3</option>
             <option value="4" <?php selected($columns, 4); ?>>4</option>
         </select>
-        <p class="description"><?php _e('Number of product columns on tablets (768px - 980px)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Number of product columns on tablets (768px - 980px)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -491,7 +498,7 @@ class MCD_Admin_Settings {
             <option value="1" <?php selected($columns, 1); ?>>1</option>
             <option value="2" <?php selected($columns, 2); ?>>2</option>
         </select>
-        <p class="description"><?php _e('Number of product columns on mobile phones (below 768px)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Number of product columns on mobile phones (below 768px)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -502,14 +509,14 @@ class MCD_Admin_Settings {
         $pages = get_pages();
         ?>
         <select name="mcd_quartz_page">
-            <option value=""><?php _e('Select a page', 'marble-collection'); ?></option>
+            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page) : ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
                     <?php echo esc_html($page->post_title); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Select page for Quartz gallery (shows only Quartz category products)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Select page for Quartz gallery (shows only Quartz category products)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -521,14 +528,14 @@ class MCD_Admin_Settings {
         $pages = get_pages();
         ?>
         <select name="mcd_marble_page">
-            <option value=""><?php _e('Select a page', 'marble-collection'); ?></option>
+            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page) : ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
                     <?php echo esc_html($page->post_title); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Select page for Marble gallery (shows only Marble category products)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Select page for Marble gallery (shows only Marble category products)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -540,14 +547,14 @@ class MCD_Admin_Settings {
         $pages = get_pages();
         ?>
         <select name="mcd_granite_page">
-            <option value=""><?php _e('Select a page', 'marble-collection'); ?></option>
+            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page) : ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
                     <?php echo esc_html($page->post_title); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Select page for Granite gallery (shows only Granite category products)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Select page for Granite gallery (shows only Granite category products)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -559,14 +566,14 @@ class MCD_Admin_Settings {
         $pages = get_pages();
         ?>
         <select name="mcd_european_page">
-            <option value=""><?php _e('Select a page', 'marble-collection'); ?></option>
+            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page) : ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
                     <?php echo esc_html($page->post_title); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Select page for European gallery (shows only European category products)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Select page for European gallery (shows only European category products)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -578,14 +585,14 @@ class MCD_Admin_Settings {
         $pages = get_pages();
         ?>
         <select name="mcd_onyx_page">
-            <option value=""><?php _e('Select a page', 'marble-collection'); ?></option>
+            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page) : ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
                     <?php echo esc_html($page->post_title); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Select page for Onyx gallery (shows only Onyx category products)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Select page for Onyx gallery (shows only Onyx category products)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -597,14 +604,14 @@ class MCD_Admin_Settings {
         $pages = get_pages();
         ?>
         <select name="mcd_sink_page">
-            <option value=""><?php _e('Select a page', 'marble-collection'); ?></option>
+            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page) : ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
                     <?php echo esc_html($page->post_title); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Select page for Sink gallery (shows only Sink category products)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Select page for Sink gallery (shows only Sink category products)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -614,7 +621,7 @@ class MCD_Admin_Settings {
         $per_page = get_option('mcd_per_page', 24);
         ?>
         <input type="number" name="mcd_per_page" value="<?php echo esc_attr($per_page); ?>" min="1" max="100" />
-        <p class="description"><?php _e('Number of products to show per page', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Number of products to show per page', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -625,10 +632,10 @@ class MCD_Admin_Settings {
         $orderby = get_option('mcd_default_orderby', 'menu_order');
         ?>
         <select name="mcd_default_orderby">
-            <option value="menu_order" <?php selected($orderby, 'menu_order'); ?>><?php _e('Default sorting', 'marble-collection'); ?></option>
-            <option value="popularity" <?php selected($orderby, 'popularity'); ?>><?php _e('Popularity', 'marble-collection'); ?></option>
-            <option value="date" <?php selected($orderby, 'date'); ?>><?php _e('Latest', 'marble-collection'); ?></option>
-            <option value="title" <?php selected($orderby, 'title'); ?>><?php _e('Name', 'marble-collection'); ?></option>
+            <option value="menu_order" <?php selected($orderby, 'menu_order'); ?>><?php esc_html_e('Default sorting', 'collection-for-woo'); ?></option>
+            <option value="popularity" <?php selected($orderby, 'popularity'); ?>><?php esc_html_e('Popularity', 'collection-for-woo'); ?></option>
+            <option value="date" <?php selected($orderby, 'date'); ?>><?php esc_html_e('Latest', 'collection-for-woo'); ?></option>
+            <option value="title" <?php selected($orderby, 'title'); ?>><?php esc_html_e('Name', 'collection-for-woo'); ?></option>
         </select>
         <?php
     }
@@ -641,7 +648,7 @@ class MCD_Admin_Settings {
         ?>
         <label>
             <input type="checkbox" name="mcd_show_filters" value="true" <?php checked($show_filters, 'true'); ?> />
-            <?php _e('Enable category and color filters', 'marble-collection'); ?>
+            <?php esc_html_e('Enable category and color filters', 'collection-for-woo'); ?>
         </label>
         <?php
     }
@@ -654,7 +661,7 @@ class MCD_Admin_Settings {
         ?>
         <label>
             <input type="checkbox" name="mcd_show_search" value="true" <?php checked($show_search, 'true'); ?> />
-            <?php _e('Enable product search', 'marble-collection'); ?>
+            <?php esc_html_e('Enable product search', 'collection-for-woo'); ?>
         </label>
         <?php
     }
@@ -667,7 +674,7 @@ class MCD_Admin_Settings {
         ?>
         <label>
             <input type="checkbox" name="mcd_show_sorting" value="true" <?php checked($show_sorting, 'true'); ?> />
-            <?php _e('Enable sorting dropdown', 'marble-collection'); ?>
+            <?php esc_html_e('Enable sorting dropdown', 'collection-for-woo'); ?>
         </label>
         <?php
     }
@@ -754,7 +761,7 @@ class MCD_Admin_Settings {
      * Render font settings section description
      */
     public function render_font_section() {
-        echo '<p>' . esc_html__('Customize fonts for product titles, descriptions, and filters. These settings are also available in Elementor if installed.', 'marble-collection') . '</p>';
+        echo '<p>' . esc_html__('Customize fonts for product titles, descriptions, and filters. These settings are also available in Elementor if installed.', 'collection-for-woo') . '</p>';
     }
     
     /**
@@ -769,7 +776,7 @@ class MCD_Admin_Settings {
                 <option value="<?php echo esc_attr($f); ?>" <?php selected($font, $f); ?>><?php echo esc_html($f); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Font family for product titles', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Font family for product titles', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -780,7 +787,7 @@ class MCD_Admin_Settings {
         $size = get_option('mcd_title_size', '18px');
         ?>
         <input type="text" name="mcd_title_size" value="<?php echo esc_attr($size); ?>" placeholder="18px" style="width: 80px;" />
-        <p class="description"><?php _e('E.g. 16px, 18px, 1.5rem', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('E.g. 16px, 18px, 1.5rem', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -796,7 +803,7 @@ class MCD_Admin_Settings {
                 <option value="<?php echo esc_attr($w); ?>" <?php selected($weight, $w); ?>><?php echo esc_html($label); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Font weight for product titles', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Font weight for product titles', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -807,7 +814,7 @@ class MCD_Admin_Settings {
         $color = get_option('mcd_title_color', '#333');
         ?>
         <input type="text" name="mcd_title_color" value="<?php echo esc_attr($color); ?>" class="mcd-color-picker" data-default-color="#333" />
-        <p class="description"><?php _e('Color for product titles', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Color for product titles', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -823,7 +830,7 @@ class MCD_Admin_Settings {
                 <option value="<?php echo esc_attr($f); ?>" <?php selected($font, $f); ?>><?php echo esc_html($f); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Font family for product descriptions', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Font family for product descriptions', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -834,7 +841,7 @@ class MCD_Admin_Settings {
         $size = get_option('mcd_excerpt_size', '14px');
         ?>
         <input type="text" name="mcd_excerpt_size" value="<?php echo esc_attr($size); ?>" placeholder="14px" style="width: 80px;" />
-        <p class="description"><?php _e('E.g. 13px, 14px, 1rem', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('E.g. 13px, 14px, 1rem', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -850,7 +857,7 @@ class MCD_Admin_Settings {
                 <option value="<?php echo esc_attr($w); ?>" <?php selected($weight, $w); ?>><?php echo esc_html($label); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Font weight for product descriptions', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Font weight for product descriptions', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -861,7 +868,7 @@ class MCD_Admin_Settings {
         $color = get_option('mcd_excerpt_color', '#666');
         ?>
         <input type="text" name="mcd_excerpt_color" value="<?php echo esc_attr($color); ?>" class="mcd-color-picker" data-default-color="#666" />
-        <p class="description"><?php _e('Color for product descriptions', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Color for product descriptions', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -877,7 +884,7 @@ class MCD_Admin_Settings {
                 <option value="<?php echo esc_attr($f); ?>" <?php selected($font, $f); ?>><?php echo esc_html($f); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('Font family for filters and search', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Font family for filters and search', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -888,7 +895,7 @@ class MCD_Admin_Settings {
         $size = get_option('mcd_filter_size', '14px');
         ?>
         <input type="text" name="mcd_filter_size" value="<?php echo esc_attr($size); ?>" placeholder="14px" style="width: 80px;" />
-        <p class="description"><?php _e('E.g. 13px, 14px, 1rem', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('E.g. 13px, 14px, 1rem', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -899,7 +906,7 @@ class MCD_Admin_Settings {
         $color = get_option('mcd_filter_color', '#333');
         ?>
         <input type="text" name="mcd_filter_color" value="<?php echo esc_attr($color); ?>" class="mcd-color-picker" data-default-color="#333" />
-        <p class="description"><?php _e('Color for filters and search text', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Color for filters and search text', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -911,9 +918,9 @@ class MCD_Admin_Settings {
         ?>
         <label>
             <input type="checkbox" name="mcd_show_color_swatches" value="yes" <?php checked($show_swatches, 'yes'); ?> />
-            <?php _e('Display available color swatches on product cards', 'marble-collection'); ?>
+            <?php esc_html_e('Display available color swatches on product cards', 'collection-for-woo'); ?>
         </label>
-        <p class="description"><?php _e('Shows small color circles for each product color variant (uses WooCommerce color attribute)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Shows small color circles for each product color variant (uses WooCommerce color attribute)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -924,7 +931,7 @@ class MCD_Admin_Settings {
         $size = get_option('mcd_swatch_size_desktop', '20px');
         ?>
         <input type="text" name="mcd_swatch_size_desktop" value="<?php echo esc_attr($size); ?>" placeholder="20px" style="width: 80px;" />
-        <p class="description"><?php _e('Size of color circles on desktop (e.g., 20px, 25px, 1.5rem)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Size of color circles on desktop (e.g., 20px, 25px, 1.5rem)', 'collection-for-woo'); ?></p>
         <?php
     }
     
@@ -935,8 +942,52 @@ class MCD_Admin_Settings {
         $size = get_option('mcd_swatch_size_mobile', '16px');
         ?>
         <input type="text" name="mcd_swatch_size_mobile" value="<?php echo esc_attr($size); ?>" placeholder="16px" style="width: 80px;" />
-        <p class="description"><?php _e('Size of color circles on mobile devices (e.g., 14px, 16px, 1rem)', 'marble-collection'); ?></p>
+        <p class="description"><?php esc_html_e('Size of color circles on mobile devices (e.g., 14px, 16px, 1rem)', 'collection-for-woo'); ?></p>
         <?php
+    }
+
+    /**
+     * Sanitize integer options
+     */
+    private function sanitize_absint($value) {
+        return absint($value);
+    }
+
+    /**
+     * Sanitize text options
+     */
+    private function sanitize_text($value) {
+        return sanitize_text_field($value);
+    }
+
+    /**
+     * Sanitize true/false string options
+     */
+    private function sanitize_true_false($value) {
+        return ($value === 'true' || $value === true || $value === '1' || $value === 1) ? 'true' : 'false';
+    }
+
+    /**
+     * Sanitize yes/no string options
+     */
+    private function sanitize_yes_no($value) {
+        return ($value === 'yes' || $value === true || $value === '1' || $value === 1) ? 'yes' : 'no';
+    }
+
+    /**
+     * Sanitize color values
+     */
+    private function sanitize_color($value) {
+        $color = sanitize_hex_color($value);
+        return $color ? $color : '';
+    }
+
+    /**
+     * Sanitize orderby option
+     */
+    private function sanitize_orderby($value) {
+        $allowed = array('menu_order', 'popularity', 'date', 'title');
+        return in_array($value, $allowed, true) ? $value : 'menu_order';
     }
 }
 

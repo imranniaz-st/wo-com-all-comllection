@@ -6,7 +6,7 @@
  * Version: 2.0.0
  * Author: Bicodev Ltd 
  * Author URI: https://Bicodev.com
- * Text Domain: marble-collection
+ * Text Domain: collection-for-woo
  * Domain Path: /languages
  * Requires at least: 5.8
  * Requires PHP: 7.4
@@ -104,7 +104,7 @@ class Marble_Collection_Display {
     public function woocommerce_missing_notice() {
         ?>
         <div class="notice notice-error">
-            <p><?php _e('Marble Collection Display requires WooCommerce to be installed and active.', 'marble-collection'); ?></p>
+            <p><?php esc_html_e('Marble Collection Display requires WooCommerce to be installed and active.', 'collection-for-woo'); ?></p>
         </div>
         <?php
     }
@@ -250,7 +250,7 @@ class Marble_Collection_Display {
      */
     public function render_collection($atts) {
         if (!$this->check_dependencies()) {
-            return '<p>' . __('WooCommerce is required for this plugin to work.', 'marble-collection') . '</p>';
+            return '<p>' . __('WooCommerce is required for this plugin to work.', 'collection-for-woo') . '</p>';
         }
         
         $atts = shortcode_atts(array(
@@ -358,16 +358,16 @@ class Marble_Collection_Display {
             // Pagination
             if ($query->max_num_pages > 1) {
                 echo '<nav class="woocommerce-pagination mcd-pagination">';
-                echo paginate_links(array(
+                echo wp_kses_post(paginate_links(array(
                     'total' => $query->max_num_pages,
                     'current' => $paged,
                     'format' => '?paged=%#%',
                     'type' => 'list',
-                ));
+                )));
                 echo '</nav>';
             }
         } else {
-            echo '<p class="mcd-no-products">' . __('No products found.', 'marble-collection') . '</p>';
+            echo '<p class="mcd-no-products">' . esc_html__('No products found.', 'collection-for-woo') . '</p>';
         }
         
         wp_reset_postdata();

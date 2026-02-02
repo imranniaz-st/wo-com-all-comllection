@@ -21,19 +21,19 @@ $show_description = isset($GLOBALS['mcd_show_description']) ? $GLOBALS['mcd_show
 $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_quick_view'] : false;
 ?>
 
-<li <?php wc_product_class('mcd-product-item', $product); ?>>
+<li class="<?php echo esc_attr(implode(' ', wc_get_product_class('mcd-product-item', $product))); ?>">
     <a href="<?php echo esc_url(get_permalink($product->get_id())); ?>" class="mcd-product-link">
         
         <span class="mcd-product-image">
             <?php
             $image_size = apply_filters('marble_collection_product_image_size', 'medium');
-            echo $product->get_image($image_size);
+            echo wp_kses_post($product->get_image($image_size));
             ?>
             <span class="mcd-overlay"></span>
             
             <?php if ($show_quick_view): ?>
             <span class="mcd-quick-view-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                <?php _e('Quick View', 'marble-collection'); ?>
+                <?php esc_html_e('Quick View', 'collection-for-woo'); ?>
             </span>
             <?php endif; ?>
         </span>

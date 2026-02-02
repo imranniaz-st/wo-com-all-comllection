@@ -36,7 +36,7 @@ $custom_css = "
         }
     </style>
 ";
-echo $custom_css;
+echo wp_kses_post($custom_css);
 
 // Prepare attributes array
 $atts = array(

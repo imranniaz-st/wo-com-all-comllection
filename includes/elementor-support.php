@@ -45,7 +45,7 @@ class MCD_Elementor_Support {
         $categories_manager->add_category(
             'marble-collection',
             array(
-                'title' => esc_html__('Marble Collection', 'marble-collection'),
+                'title' => esc_html__('Marble Collection', 'collection-for-woo'),
                 'icon'  => 'fa fa-gem',
             )
         );

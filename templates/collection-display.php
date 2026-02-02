@@ -55,10 +55,10 @@ $colors = get_terms(array(
             <?php if ($show_search): ?>
             <div class="mcd-search-widget">
                 <form class="mcd-search-form" role="search">
-                    <label class="screen-reader-text"><?php _e('Search for:', 'marble-collection'); ?></label>
-                    <input type="search" class="mcd-search-field" placeholder="<?php esc_attr_e('Search products...', 'marble-collection'); ?>" value="" name="s">
+                    <label class="screen-reader-text"><?php esc_html_e('Search for:', 'collection-for-woo'); ?></label>
+                    <input type="search" class="mcd-search-field" placeholder="<?php esc_attr_e('Search products...', 'collection-for-woo'); ?>" value="" name="s">
                     <button type="submit" class="mcd-search-button">
-                        <span><?php _e('Search', 'marble-collection'); ?></span>
+                        <span><?php esc_html_e('Search', 'collection-for-woo'); ?></span>
                     </button>
                 </form>
             </div>
@@ -70,12 +70,12 @@ $colors = get_terms(array(
                 <!-- Category Filter -->
                 <?php if (!empty($categories) && !is_wp_error($categories)): ?>
                 <div class="mcd-filter-group">
-                    <h4 class="mcd-filter-title"><?php _e('Product Categories', 'marble-collection'); ?></h4>
+                    <h4 class="mcd-filter-title"><?php esc_html_e('Product Categories', 'collection-for-woo'); ?></h4>
                     <ul class="mcd-filter-list mcd-category-filter">
                         <li>
                             <label>
                                 <input type="radio" name="mcd_category" value="" checked>
-                                <span><?php _e('All Categories', 'marble-collection'); ?></span>
+                                <span><?php esc_html_e('All Categories', 'collection-for-woo'); ?></span>
                             </label>
                         </li>
                         <?php foreach ($categories as $cat): ?>
@@ -94,7 +94,7 @@ $colors = get_terms(array(
                 <!-- Color Filter -->
                 <?php if (!empty($colors) && !is_wp_error($colors)): ?>
                 <div class="mcd-filter-group">
-                    <h4 class="mcd-filter-title"><?php _e('Product Color', 'marble-collection'); ?></h4>
+                    <h4 class="mcd-filter-title"><?php esc_html_e('Product Color', 'collection-for-woo'); ?></h4>
                     <ul class="mcd-filter-list mcd-color-filter">
                         <?php foreach ($colors as $color): ?>
                         <li>
@@ -119,16 +119,16 @@ $colors = get_terms(array(
             
             <div class="mcd-top-bar">
                 <p class="mcd-result-count" role="alert">
-                    <?php _e('Loading products...', 'marble-collection'); ?>
+                    <?php esc_html_e('Loading products...', 'collection-for-woo'); ?>
                 </p>
                 
                 <?php if ($show_sorting): ?>
                 <form class="mcd-ordering">
-                    <select name="orderby" class="mcd-orderby" aria-label="<?php esc_attr_e('Shop order', 'marble-collection'); ?>">
-                        <option value="menu_order" selected="selected"><?php _e('Default sorting', 'marble-collection'); ?></option>
-                        <option value="popularity"><?php _e('Sort by popularity', 'marble-collection'); ?></option>
-                        <option value="date"><?php _e('Sort by latest', 'marble-collection'); ?></option>
-                        <option value="title"><?php _e('Sort by name', 'marble-collection'); ?></option>
+                    <select name="orderby" class="mcd-orderby" aria-label="<?php esc_attr_e('Shop order', 'collection-for-woo'); ?>">
+                        <option value="menu_order" selected="selected"><?php esc_html_e('Default sorting', 'collection-for-woo'); ?></option>
+                        <option value="popularity"><?php esc_html_e('Sort by popularity', 'collection-for-woo'); ?></option>
+                        <option value="date"><?php esc_html_e('Sort by latest', 'collection-for-woo'); ?></option>
+                        <option value="title"><?php esc_html_e('Sort by name', 'collection-for-woo'); ?></option>
                     </select>
                 </form>
                 <?php endif; ?>
@@ -137,7 +137,7 @@ $colors = get_terms(array(
             <div class="mcd-products-container">
                 <div class="mcd-loading">
                     <span class="spinner"></span>
-                    <p><?php _e('Loading products...', 'marble-collection'); ?></p>
+                    <p><?php esc_html_e('Loading products...', 'collection-for-woo'); ?></p>
                 </div>
             </div>
             

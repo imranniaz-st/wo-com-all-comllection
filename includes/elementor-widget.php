@@ -16,7 +16,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
     }
     
     public function get_title() {
-        return esc_html__('Marble Collection', 'marble-collection');
+        return esc_html__('Marble Collection', 'collection-for-woo');
     }
     
     public function get_icon() {
@@ -36,7 +36,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'content_section',
             array(
-                'label' => esc_html__('Settings', 'marble-collection'),
+                'label' => esc_html__('Settings', 'collection-for-woo'),
                 'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
             )
         );
@@ -44,12 +44,12 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'collection_layout',
             array(
-                'label'   => esc_html__('Layout', 'marble-collection'),
+                'label'   => esc_html__('Layout', 'collection-for-woo'),
                 'type'    => \Elementor\Controls_Manager::SELECT,
                 'default' => 'grid',
                 'options' => array(
-                    'grid'   => esc_html__('Grid with Filters', 'marble-collection'),
-                    'simple' => esc_html__('Simple Grid', 'marble-collection'),
+                    'grid'   => esc_html__('Grid with Filters', 'collection-for-woo'),
+                    'simple' => esc_html__('Simple Grid', 'collection-for-woo'),
                 ),
             )
         );
@@ -57,13 +57,13 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'columns',
             array(
-                'label'   => esc_html__('Columns', 'marble-collection'),
+                'label'   => esc_html__('Columns', 'collection-for-woo'),
                 'type'    => \Elementor\Controls_Manager::SELECT,
                 'default' => '3',
                 'options' => array(
-                    '2' => esc_html__('2 Columns', 'marble-collection'),
-                    '3' => esc_html__('3 Columns', 'marble-collection'),
-                    '4' => esc_html__('4 Columns', 'marble-collection'),
+                    '2' => esc_html__('2 Columns', 'collection-for-woo'),
+                    '3' => esc_html__('3 Columns', 'collection-for-woo'),
+                    '4' => esc_html__('4 Columns', 'collection-for-woo'),
                 ),
             )
         );
@@ -71,10 +71,10 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'show_filters',
             array(
-                'label'        => esc_html__('Show Filters', 'marble-collection'),
+                'label'        => esc_html__('Show Filters', 'collection-for-woo'),
                 'type'         => \Elementor\Controls_Manager::SWITCHER,
-                'label_on'     => esc_html__('Yes', 'marble-collection'),
-                'label_off'    => esc_html__('No', 'marble-collection'),
+                'label_on'     => esc_html__('Yes', 'collection-for-woo'),
+                'label_off'    => esc_html__('No', 'collection-for-woo'),
                 'return_value' => 'yes',
                 'default'      => 'yes',
                 'condition'    => array(
@@ -86,10 +86,10 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'show_search',
             array(
-                'label'        => esc_html__('Show Search', 'marble-collection'),
+                'label'        => esc_html__('Show Search', 'collection-for-woo'),
                 'type'         => \Elementor\Controls_Manager::SWITCHER,
-                'label_on'     => esc_html__('Yes', 'marble-collection'),
-                'label_off'    => esc_html__('No', 'marble-collection'),
+                'label_on'     => esc_html__('Yes', 'collection-for-woo'),
+                'label_off'    => esc_html__('No', 'collection-for-woo'),
                 'return_value' => 'yes',
                 'default'      => 'yes',
                 'condition'    => array(
@@ -101,10 +101,10 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'show_title',
             array(
-                'label'        => esc_html__('Show Product Title', 'marble-collection'),
+                'label'        => esc_html__('Show Product Title', 'collection-for-woo'),
                 'type'         => \Elementor\Controls_Manager::SWITCHER,
-                'label_on'     => esc_html__('Yes', 'marble-collection'),
-                'label_off'    => esc_html__('No', 'marble-collection'),
+                'label_on'     => esc_html__('Yes', 'collection-for-woo'),
+                'label_off'    => esc_html__('No', 'collection-for-woo'),
                 'return_value' => 'yes',
                 'default'      => 'yes',
             )
@@ -113,10 +113,10 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'show_description',
             array(
-                'label'        => esc_html__('Show Product Description', 'marble-collection'),
+                'label'        => esc_html__('Show Product Description', 'collection-for-woo'),
                 'type'         => \Elementor\Controls_Manager::SWITCHER,
-                'label_on'     => esc_html__('Yes', 'marble-collection'),
-                'label_off'    => esc_html__('No', 'marble-collection'),
+                'label_on'     => esc_html__('Yes', 'collection-for-woo'),
+                'label_off'    => esc_html__('No', 'collection-for-woo'),
                 'return_value' => 'yes',
                 'default'      => 'yes',
             )
@@ -125,10 +125,10 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'show_quick_view',
             array(
-                'label'        => esc_html__('Show Quick View Button', 'marble-collection'),
+                'label'        => esc_html__('Show Quick View Button', 'collection-for-woo'),
                 'type'         => \Elementor\Controls_Manager::SWITCHER,
-                'label_on'     => esc_html__('Yes', 'marble-collection'),
-                'label_off'    => esc_html__('No', 'marble-collection'),
+                'label_on'     => esc_html__('Yes', 'collection-for-woo'),
+                'label_off'    => esc_html__('No', 'collection-for-woo'),
                 'return_value' => 'yes',
                 'default'      => 'no',
             )
@@ -140,7 +140,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'style_section',
             array(
-                'label' => esc_html__('Styles', 'marble-collection'),
+                'label' => esc_html__('Styles', 'collection-for-woo'),
                 'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
             )
         );
@@ -150,7 +150,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Typography::get_type(),
             array(
                 'name'     => 'title_typography',
-                'label'    => esc_html__('Title Typography', 'marble-collection'),
+                'label'    => esc_html__('Title Typography', 'collection-for-woo'),
                 'selector' => '{{WRAPPER}} .mcd-product-title',
             )
         );
@@ -159,7 +159,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'title_color',
             array(
-                'label'     => esc_html__('Title Color', 'marble-collection'),
+                'label'     => esc_html__('Title Color', 'collection-for-woo'),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
                     '{{WRAPPER}} .mcd-product-title' => 'color: {{VALUE}};',
@@ -172,7 +172,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Typography::get_type(),
             array(
                 'name'     => 'excerpt_typography',
-                'label'    => esc_html__('Description Typography', 'marble-collection'),
+                'label'    => esc_html__('Description Typography', 'collection-for-woo'),
                 'selector' => '{{WRAPPER}} .mcd-product-excerpt',
             )
         );
@@ -181,7 +181,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'excerpt_color',
             array(
-                'label'     => esc_html__('Description Color', 'marble-collection'),
+                'label'     => esc_html__('Description Color', 'collection-for-woo'),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
                     '{{WRAPPER}} .mcd-product-excerpt' => 'color: {{VALUE}};',
@@ -193,7 +193,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'card_bg_color',
             array(
-                'label'     => esc_html__('Card Background', 'marble-collection'),
+                'label'     => esc_html__('Card Background', 'collection-for-woo'),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
                     '{{WRAPPER}} .mcd-product-item' => 'background-color: {{VALUE}};',
@@ -205,7 +205,7 @@ class MCD_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'item_gap',
             array(
-                'label'      => esc_html__('Items Gap', 'marble-collection'),
+                'label'      => esc_html__('Items Gap', 'collection-for-woo'),
                 'type'       => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => array('px'),
                 'range'      => array(
