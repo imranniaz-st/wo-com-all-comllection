@@ -1,10 +1,21 @@
-# Release Notes - Version 1.0.0
+# Release Notes
 
-**Release Date:** February 2, 2026  
-**Branch:** wordpress-publish  
 **Repository:** https://github.com/imranniaz-st/wo-com-all-comllection
 
+## ✅ v2.0.1 - February 2, 2026
+
+**Branch:** bugfix
+
+### Fixes
+- PluginCheck compliance updates (escaping output and sanitizing settings)
+- Text domain standardized to `collection-for-woo`
+- Removed hidden files from plugin root
+- Documentation moved to `docs/`
+
 ## 🎉 First Release - v1.0.0
+
+**Release Date:** February 2, 2026  
+**Branch:** wordpress-publish
 
 This is the first official release of the Marble Collection Display plugin for WordPress/WooCommerce.
 
@@ -255,11 +266,11 @@ GPL v2 or later
 
 ## 🎁 Special Thanks
 
-Thank you for using Marble Collection Display v1.0.0!
+Thank you for using Marble Collection Display v2.0.1!
 
 ---
 
-**Download:** https://github.com/imranniaz-st/wo-com-all-comllection/releases/tag/v1.0.0  
+**Download:** https://github.com/imranniaz-st/wo-com-all-comllection/releases/tag/v2.0.1  
 **Repository:** https://github.com/imranniaz-st/wo-com-all-comllection  
 **Branch:** wordpress-publish
 

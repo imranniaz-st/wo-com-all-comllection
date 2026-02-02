@@ -2,7 +2,7 @@
 
 A professional WordPress/WooCommerce plugin for displaying beautiful marble and stone product collections with advanced filtering, responsive design, and Elementor support.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.1-blue)
 ![License](https://img.shields.io/badge/license-GPL--2.0+-green)
 ![WordPress](https://img.shields.io/badge/WordPress-5.8+-blue)
 ![WooCommerce](https://img.shields.io/badge/WooCommerce-5.0+-green)
@@ -90,13 +90,13 @@ git clone https://github.com/ADC212006/wo-com-all-comllection.git
 
 ## 📖 Documentation
 
-- [QUICK_START.md](./QUICK_START.md) - 5-minute setup
-- [INSTALLATION.md](./INSTALLATION.md) - Detailed installation
-- [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) - Admin panel walkthrough
-- [GALLERY-SETUP-GUIDE.md](./GALLERY-SETUP-GUIDE.md) - Multi-gallery setup
-- [ELEMENTOR_FONTS_GUIDE.md](./ELEMENTOR_FONTS_GUIDE.md) - Elementor integration
-- [PAGES-STATUS.md](./PAGES-STATUS.md) - Check configured pages
-- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues & solutions
+- [QUICK_START.md](./docs/QUICK_START.md) - 5-minute setup
+- [INSTALLATION.md](./docs/INSTALLATION.md) - Detailed installation
+- [ADMIN_GUIDE.md](./docs/ADMIN_GUIDE.md) - Admin panel walkthrough
+- [GALLERY-SETUP-GUIDE.md](./docs/GALLERY-SETUP-GUIDE.md) - Multi-gallery setup
+- [ELEMENTOR_FONTS_GUIDE.md](./docs/ELEMENTOR_FONTS_GUIDE.md) - Elementor integration
+- [PAGES-STATUS.md](./docs/PAGES-STATUS.md) - Check configured pages
+- [TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md) - Common issues & solutions
 
 ## 🎯 Usage
 

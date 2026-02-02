@@ -304,5 +304,5 @@ Your Marble Collection Display plugin is ready to use.
 
 **Questions?** See the documentation files included with the plugin.
 
-**Version:** 1.0.0
+**Version:** 2.0.1
 **Last Updated:** February 2, 2026

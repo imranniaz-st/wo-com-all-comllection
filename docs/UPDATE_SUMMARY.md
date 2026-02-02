@@ -181,7 +181,7 @@ See **ELEMENTOR_FONTS_GUIDE.md** for:
 
 ## 🔄 Version Information
 
-**Plugin Version:** 1.0.0
+**Plugin Version:** 2.0.1
 **Updated:** February 2, 2026
 **Compatibility:**
 - WordPress: 5.8+

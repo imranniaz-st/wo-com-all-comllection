@@ -68,7 +68,7 @@ class MCD_Elementor_Support {
             'mcd-elementor-editor',
             plugins_url('../assets/css/elementor-editor.css', __FILE__),
             array(),
-            '1.0.0'
+            MCD_VERSION
         );
     }
     

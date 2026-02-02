@@ -158,4 +158,5 @@ Then add the font name to the admin settings options.
 
 ## Version History
 
+**v2.0.1** - PluginCheck compliance updates and documentation cleanup
 **v1.0.0** - Initial release with Elementor and font customization support

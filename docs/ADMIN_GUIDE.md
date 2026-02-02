@@ -359,7 +359,7 @@ Ready for custom extensions with WordPress filters and actions.
 ## 📝 Version Information
 
 **Plugin Name:** Marble Collection Display
-**Version:** 1.0.0
+**Version:** 2.0.1
 **Status:** Production Ready ✅
 **Last Updated:** February 2, 2026
 

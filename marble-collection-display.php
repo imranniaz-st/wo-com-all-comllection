@@ -3,7 +3,7 @@
  * Plugin Name: Marble Collection Display
  * Plugin URI: https://github.com/imranniaz-st/wo-com-all-comllection
  * Description: Professional WooCommerce product collection display plugin for marble and stone products with filtering and grid layout
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Bicodev Ltd 
  * Author URI: https://Bicodev.com
  * Text Domain: collection-for-woo
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('MCD_VERSION', '2.0.0');
+define('MCD_VERSION', '2.0.1');
 define('MCD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('MCD_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('MCD_PLUGIN_BASENAME', plugin_basename(__FILE__));

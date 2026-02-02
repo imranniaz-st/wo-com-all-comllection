@@ -31,7 +31,7 @@ The plugin automatically checks for new releases from the GitHub repository:
 
 ## Version Information
 
-**Current Version:** 1.0.0  
+**Current Version:** 2.0.1  
 **Update Source:** GitHub Releases  
 **Branch:** wordpress-publish
 
@@ -131,7 +131,7 @@ https://api.github.com/repos/imranniaz-st/wo-com-all-comllection/releases/latest
 ## Version Comparison
 
 The updater uses PHP's `version_compare()`:
-- Current: `1.0.0`
+- Current: `2.0.1`
 - GitHub: `1.0.1`
 - Result: Update available ✅
 
