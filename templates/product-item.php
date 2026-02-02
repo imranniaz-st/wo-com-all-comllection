@@ -29,6 +29,7 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
             $image_size = apply_filters('marble_collection_product_image_size', 'medium');
             echo wp_kses_post($product->get_image($image_size));
             ?>
+            <span class="mcd-watermark">GTA Marble</span>
             <span class="mcd-overlay"></span>
             
             <?php if ($show_quick_view): ?>
