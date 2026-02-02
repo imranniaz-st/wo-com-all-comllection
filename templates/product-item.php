@@ -55,12 +55,6 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
             <?php echo esc_html($sku); ?>
         </p>
         
-        <?php if ($show_description && $product->get_short_description()): ?>
-        <div class="mcd-product-excerpt">
-            <?php echo wp_kses_post(wp_trim_words($product->get_short_description(), 15)); ?>
-        </div>
-        <?php endif; ?>
-        
         <?php
         // Display color swatches
         $show_swatches = get_option('mcd_show_color_swatches', 'yes') === 'yes';

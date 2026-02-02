@@ -344,14 +344,7 @@
 }
 
 .mcd-product-excerpt {
-    padding: 0 15px 15px;
-    margin: 0;
-    font-size: 13px;
-    color: #666;
-    line-height: 1.6;
-    text-align: center;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    display: none !important;
 }
 
 /* Color Swatches */
@@ -582,14 +575,7 @@
     }
     
     .mcd-product-excerpt {
-        font-size: 10px;
-        padding: 0 10px 12px;
-        margin: 0;
-        text-align: left;
-        line-height: 1.5;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        hyphens: auto;
+        display: none !important;
     }
     
     .mcd-color-swatches {

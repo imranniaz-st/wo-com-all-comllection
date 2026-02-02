@@ -67,6 +67,8 @@ class Marble_Collection_Display {
         // AJAX handlers
         add_action('wp_ajax_mcd_filter_products', array($this, 'ajax_filter_products'));
         add_action('wp_ajax_nopriv_mcd_filter_products', array($this, 'ajax_filter_products'));
+        add_action('wp_ajax_mcd_quick_view', array($this, 'ajax_quick_view'));
+        add_action('wp_ajax_nopriv_mcd_quick_view', array($this, 'ajax_quick_view'));
         
         // Load admin settings
         if (is_admin()) {
@@ -407,6 +409,52 @@ class Marble_Collection_Display {
             'html' => $html,
             'found_posts' => $query->found_posts,
             'max_pages' => $query->max_num_pages,
+        ));
+    }
+    
+    /**
+     * AJAX handler for quick view
+     */
+    public function ajax_quick_view() {
+        // Verify nonce
+        if (!check_ajax_referer('mcd_filter_nonce', 'nonce', false)) {
+            wp_send_json_error(array('message' => 'Security check failed'));
+            return;
+        }
+        
+        $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+        
+        if (!$product_id) {
+            wp_send_json_error(array('message' => 'Invalid product ID'));
+            return;
+        }
+        
+        $product = wc_get_product($product_id);
+        
+        if (!$product) {
+            wp_send_json_error(array('message' => 'Product not found'));
+            return;
+        }
+        
+        $sku = $product->get_sku();
+        if (empty($sku)) {
+            $sku = 'SKU-' . $product->get_id();
+        }
+        
+        $description = $product->get_description();
+        if (empty($description)) {
+            $description = $product->get_short_description();
+        }
+        if (empty($description)) {
+            $description = __('No description available.', 'collection-for-woo');
+        }
+        
+        wp_send_json_success(array(
+            'title' => $product->get_name(),
+            'sku' => $sku,
+            'description' => wp_kses_post($description),
+            'image' => $product->get_image('medium'),
+            'permalink' => get_permalink($product->get_id()),
         ));
     }
 }

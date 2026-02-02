@@ -160,10 +160,127 @@
     };
     
     /**
+     * Quick View Handler
+     */
+    var QuickView = {
+        
+        /**
+         * Initialize
+         */
+        init: function() {
+            this.modal = $('#mcd-quick-view-modal');
+            
+            if (this.modal.length === 0) {
+                return;
+            }
+            
+            this.bindEvents();
+        },
+        
+        /**
+         * Bind events
+         */
+        bindEvents: function() {
+            var self = this;
+            
+            // Quick view button click
+            $(document).on('click', '.mcd-quick-view-btn', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var productId = $(this).data('product-id');
+                self.loadProduct(productId);
+            });
+            
+            // Close modal
+            this.modal.find('.mcd-modal-close').on('click', function() {
+                self.closeModal();
+            });
+            
+            // Close on outside click
+            this.modal.on('click', function(e) {
+                if ($(e.target).is('.mcd-modal')) {
+                    self.closeModal();
+                }
+            });
+            
+            // Close on ESC key
+            $(document).on('keyup', function(e) {
+                if (e.key === 'Escape' && self.modal.is(':visible')) {
+                    self.closeModal();
+                }
+            });
+        },
+        
+        /**
+         * Load product
+         */
+        loadProduct: function(productId) {
+            var self = this;
+            
+            // Check if mcdAjax is defined
+            if (typeof mcdAjax === 'undefined') {
+                alert('Configuration error. Please refresh the page.');
+                return;
+            }
+            
+            // Show loading
+            self.modal.find('.mcd-quick-view-body').html('<p>Loading...</p>');
+            self.modal.fadeIn(300);
+            
+            // AJAX request
+            $.ajax({
+                url: mcdAjax.ajax_url,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'mcd_quick_view',
+                    nonce: mcdAjax.nonce,
+                    product_id: productId
+                },
+                success: function(response) {
+                    if (response.success && response.data) {
+                        self.displayProduct(response.data);
+                    } else {
+                        self.modal.find('.mcd-quick-view-body').html('<p>Error loading product.</p>');
+                    }
+                },
+                error: function() {
+                    self.modal.find('.mcd-quick-view-body').html('<p>Error loading product.</p>');
+                }
+            });
+        },
+        
+        /**
+         * Display product
+         */
+        displayProduct: function(data) {
+            var self = this;
+            
+            var html = '<div class="mcd-quick-view-image">' + data.image + '</div>';
+            html += '<div class="mcd-quick-view-details">';
+            html += '<h3 class="mcd-quick-view-title">' + data.title + '</h3>';
+            html += '<p class="mcd-quick-view-code"><strong>Product Code:</strong> <span>' + data.sku + '</span></p>';
+            html += '<div class="mcd-quick-view-description">' + data.description + '</div>';
+            html += '<a href="' + data.permalink + '" class="mcd-btn mcd-btn-primary mcd-more-details-btn">More Details</a>';
+            html += '</div>';
+            
+            self.modal.find('.mcd-quick-view-body').html(html);
+        },
+        
+        /**
+         * Close modal
+         */
+        closeModal: function() {
+            this.modal.fadeOut(300);
+        }
+    };
+    
+    /**
      * Initialize on document ready
      */
     $(document).ready(function() {
         MarbleCollection.init();
+        QuickView.init();
     });
     
 })(jQuery);
