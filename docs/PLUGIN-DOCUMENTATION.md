@@ -409,7 +409,299 @@ The plugin includes GitHub-based auto-updater:
 
 ---
 
-## 📝 Changelog
+## �️ Category Management Guide
+
+### Creating Product Categories
+
+**Step 1: Create Categories**
+1. Go to **Products → Categories**
+2. Click **Add New Category**
+3. Enter category name (e.g., "Superstone Quartz")
+4. Set category slug (lowercase, no spaces)
+5. Add description (optional)
+6. Upload category image (optional)
+7. Click **Add New Category**
+
+**Step 2: Assign Products to Categories**
+1. Go to **Products → All Products**
+2. Edit a product
+3. In **Product Data** tab, scroll to **Product Categories**
+4. Check the appropriate category
+5. Click **Update**
+
+**Category Slug Rules:**
+- Must be lowercase
+- No spaces (use hyphens instead)
+- Should be descriptive and SEO-friendly
+- Examples: `superstone-quartz`, `goodstone-quartz`, `kitchen-countertops`
+
+### Gallery Pages Setup
+
+**For Each Collection Category:**
+
+1. Create a dedicated page:
+   - **Page Name:** "[Collection Name] Gallery"
+   - **Slug:** "[collection]-gallery"
+   - **Content:** Introductory text (optional)
+
+2. Configure in plugin settings:
+   - Go to **Settings → Marble Collections**
+   - Scroll to **Gallery Pages**
+   - Select the page for each category
+   - Click **Save Changes**
+
+3. The gallery page will automatically:
+   - Display only products from that category
+   - Apply all plugin filters and settings
+   - Show responsive grid layout
+   - Enable AJAX search/filter
+
+---
+
+## ⚠️ Troubleshooting Guide
+
+### Issue: Gallery page shows no products
+
+**Causes & Solutions:**
+
+1. **No products assigned to category**
+   - Check: Go to **Products → Categories**
+   - Verify category exists
+   - Go to **Products → All Products**
+   - Edit a product, assign to the category
+
+2. **Category slug mismatch**
+   - Verify category slug is lowercase
+   - Check plugin settings match the slug
+   - Clear browser cache
+   - Clear any caching plugins
+
+3. **Wrong page selected in settings**
+   - Go to **Settings → Marble Collections → Gallery Pages**
+   - Confirm correct page is selected
+   - Click **Save Changes**
+   - Verify page is published
+
+4. **Products not published**
+   - Check product status is "Publish"
+   - Check product stock (if tracking enabled)
+   - Verify WooCommerce is active
+
+**Debug Steps:**
+```
+1. Deactivate all other plugins except WooCommerce
+2. Switch to default WordPress theme (if needed)
+3. Check WordPress/WooCommerce versions compatible
+4. Clear all caches (browser, server, plugins)
+5. Test in incognito/private window
+```
+
+### Issue: Gallery displays all products (no filtering)
+
+**Solutions:**
+
+1. **Page not properly linked in settings**
+   - Go to **Settings → Marble Collections**
+   - Re-select the gallery page
+   - Click **Save Changes**
+   - Wait 10 seconds for cache clear
+
+2. **Multiple galleries on one page**
+   - If using shortcodes, ensure correct category parameter
+   - Example: `[marble_collection category="superstone-quartz"]`
+   - Verify no typos in category slug
+
+3. **Cache plugin interfering**
+   - Disable caching temporarily
+   - Clear all caches
+   - Re-enable and test
+
+### Issue: Images not displaying
+
+**Solutions:**
+
+1. **Product images not uploaded**
+   - Go to **Products → All Products**
+   - Edit product
+   - Upload featured image in **Product Image**
+   - Upload gallery images
+   - Update product
+
+2. **Image URLs broken**
+   - Check file permissions on server
+   - Verify image files exist in media library
+   - Re-upload images if corrupted
+
+3. **Lazy loading issues**
+   - If images not loading with lazy load enabled:
+   - Go to plugin settings
+   - Disable lazy loading temporarily
+   - Click **Save Changes**
+
+### Issue: Filters not working / AJAX not responding
+
+**Solutions:**
+
+1. **JavaScript conflicts**
+   - Disable other plugins one by one
+   - Check browser console for errors (F12)
+   - Verify jQuery is loaded
+
+2. **Server AJAX misconfiguration**
+   - Test AJAX: Add this to page:
+     ```php
+     echo 'AJAX Test: ';
+     echo (function_exists('wp_remote_post')) ? 'OK' : 'FAIL';
+     ```
+   - Contact hosting provider if AJAX disabled
+
+3. **Missing filter attributes**
+   - Verify products have attributes assigned
+   - Go to **Products → Attributes**
+   - Ensure attributes are attached to products
+   - Assign values to each product
+
+### Issue: Plugin settings not saving
+
+**Solutions:**
+
+1. **Insufficient user permissions**
+   - Ensure logged-in user has **manage_options** capability
+   - User role should be **Administrator**
+
+2. **PHP memory limit**
+   - Increase in wp-config.php:
+     ```php
+     define('WP_MEMORY_LIMIT', '256M');
+     ```
+
+3. **POST data size limit**
+   - Check server limits in php.ini:
+     ```
+     post_max_size = 32M
+     upload_max_filesize = 32M
+     ```
+
+### Issue: Slow loading / performance issues
+
+**Solutions:**
+
+1. **Too many products per page**
+   - Go to **Settings → Marble Collections**
+   - Reduce "Products Per Page" (try 12-20)
+   - Click **Save Changes**
+
+2. **High-resolution images**
+   - Use image optimization plugin (Smush, Imagify)
+   - Compress images before upload
+   - Use appropriate image dimensions (max 1920px width)
+
+3. **Lazy loading disabled**
+   - Go to plugin settings
+   - Enable "Lazy Load Images"
+   - This loads images only when visible
+
+4. **Database optimization**
+   - Use WP Rocket, W3 Total Cache for caching
+   - Run database optimization tools
+   - Remove unused plugins/posts
+
+---
+
+## 📋 Common Setup Workflows
+
+### Workflow 1: Basic Multi-Category Gallery
+
+**Goal:** Display 3 product categories with separate gallery pages
+
+**Steps:**
+1. Create 3 product categories: Category A, B, C
+2. Create 3 pages: "Gallery A", "Gallery B", "Gallery C"
+3. Assign 5-10 products to each category
+4. In plugin settings, assign page to each category
+5. Add menu links to each gallery page
+6. Test filter/search on each page
+
+**Result:** Three independent galleries, each showing only their category products
+
+### Workflow 2: Master Gallery + Category Pages
+
+**Goal:** One page showing all collections + individual pages per collection
+
+**Steps:**
+1. Enable "All Collections Page" in settings
+2. Select a page for "All Collections"
+3. Set up individual gallery pages for each category
+4. In navigation menu:
+   - Add "All Collections" → All Collections Page
+   - Add "Category A" → Gallery A Page
+   - Add "Category B" → Gallery B Page
+
+**Result:** Main page shows all products, category pages filter by category
+
+### Workflow 3: Elementor Multi-Widget Page
+
+**Goal:** Display multiple collections on single page with custom layout
+
+**Steps:**
+1. Create a new page in Elementor
+2. Add heading: "Our Collections"
+3. Add Marble Collection widget, set category: Category A
+4. Add divider
+5. Add Marble Collection widget, set category: Category B
+6. Add CTA button: "View All Collections"
+7. Publish page
+
+**Result:** Single page with multiple collection widgets, all customizable
+
+---
+
+## 🎯 Best Practices
+
+### Content Organization
+- ✅ One category per product type/collection
+- ✅ Descriptive category names and slugs
+- ✅ Category images for visual browsing
+- ✅ Limit categories to 10-15 for easier management
+
+### Product Setup
+- ✅ High-quality images (1920x1440px+)
+- ✅ Descriptive product names and descriptions
+- ✅ Assign all relevant attributes (color, size, etc.)
+- ✅ Set accurate pricing and stock
+- ✅ Use featured image prominently
+
+### Gallery Configuration
+- ✅ 3-4 columns desktop for stone/marble products
+- ✅ 2 columns tablet, 1 column mobile
+- ✅ 12-20 products per page (optimize for speed)
+- ✅ Enable filters for better UX
+- ✅ Enable search for product discovery
+
+### Performance
+- ✅ Optimize images before upload
+- ✅ Enable lazy loading
+- ✅ Use caching plugin (WP Rocket, W3 Total Cache)
+- ✅ Monitor site speed regularly
+- ✅ Update plugin and dependencies
+
+### SEO
+- ✅ Use descriptive category slugs
+- ✅ Add meta descriptions to gallery pages
+- ✅ Use proper heading hierarchy (H1, H2, H3)
+- ✅ Add alt text to all images
+- ✅ Create sitemap with category pages
+
+### Accessibility
+- ✅ Ensure color contrast meets WCAG standards
+- ✅ Use descriptive alt text for images
+- ✅ Test keyboard navigation
+- ✅ Test with screen readers
+- ✅ Ensure mobile usability
+
+---
+
+## �📝 Changelog
 
 ### v2.0.1 (February 3, 2026)
 - ✅ Fixed sanitization method visibility (private → public)
