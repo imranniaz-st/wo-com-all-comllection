@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 class MCD_Collection_Display_Widget extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'marble_collection_display';
+        return 'marble_collection';
     }
 
     public function get_title() {
@@ -92,7 +92,7 @@ class MCD_Collection_Display_Widget extends \Elementor\Widget_Base {
             $shortcode_atts[] = 'limit="' . esc_attr($settings['limit']) . '"';
         }
         
-        $shortcode = '[marble_collection_display ' . implode(' ', $shortcode_atts) . ']';
+        $shortcode = '[marble_collection ' . implode(' ', $shortcode_atts) . ']';
         
         echo do_shortcode($shortcode);
         echo '<p style="background:#f0f0f0; padding:10px; margin:10px 0; border-left:3px solid #1a1a1a;"><strong>Shortcode:</strong> ' . esc_html($shortcode) . '</p>';

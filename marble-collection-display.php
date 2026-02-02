@@ -62,6 +62,7 @@ class Marble_Collection_Display {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_shortcode('marble_collection', array($this, 'render_collection'));
         add_action('init', array($this, 'register_assets'));
+        add_filter('woocommerce_get_price_html', array($this, 'disable_price_html'), 10, 2);
         
         // AJAX handlers
         add_action('wp_ajax_mcd_filter_products', array($this, 'ajax_filter_products'));
@@ -88,6 +89,13 @@ class Marble_Collection_Display {
         }
     }
     
+    /**
+     * Disable price display for all products (shop + single)
+     */
+    public function disable_price_html($price, $product) {
+        return '';
+    }
+
     /**
      * Check if WooCommerce is active
      */

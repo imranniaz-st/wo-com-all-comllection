@@ -117,6 +117,63 @@ class MCD_Auto_Page_Creator {
             'meta_description' => 'Contact GTA Marble. Phone: +1 (647) 291-2686. Locations in Etobicoke & GTA. Free quotes.',
             'focus_keyword' => 'Contact GTA Marble'
         ));
+
+        // Legacy Gallery Pages (WooCommerce Products)
+        $pages_created[] = self::create_page(array(
+            'title' => 'All Collections Gallery',
+            'slug' => 'collection-gallery',
+            'content' => self::get_legacy_gallery_content('All Collections Gallery', 'all'),
+            'meta_description' => 'Browse all collections. 1000s of slabs. Quartz, marble, granite, and more.',
+            'focus_keyword' => 'All Collections Gallery'
+        ));
+
+        $pages_created[] = self::create_page(array(
+            'title' => 'Quartz Gallery',
+            'slug' => 'quartz-gallery',
+            'content' => self::get_legacy_gallery_content('Quartz Gallery', 'quartz'),
+            'meta_description' => 'Quartz gallery with all quartz products from WooCommerce.',
+            'focus_keyword' => 'Quartz Gallery'
+        ));
+
+        $pages_created[] = self::create_page(array(
+            'title' => 'Marble Gallery',
+            'slug' => 'marble-gallery',
+            'content' => self::get_legacy_gallery_content('Marble Gallery', 'marble'),
+            'meta_description' => 'Marble gallery with all marble products from WooCommerce.',
+            'focus_keyword' => 'Marble Gallery'
+        ));
+
+        $pages_created[] = self::create_page(array(
+            'title' => 'Granite Gallery',
+            'slug' => 'granite-gallery',
+            'content' => self::get_legacy_gallery_content('Granite Gallery', 'granite'),
+            'meta_description' => 'Granite gallery with all granite products from WooCommerce.',
+            'focus_keyword' => 'Granite Gallery'
+        ));
+
+        $pages_created[] = self::create_page(array(
+            'title' => 'European Gallery',
+            'slug' => 'european-gallery',
+            'content' => self::get_legacy_gallery_content('European Gallery', 'european'),
+            'meta_description' => 'European collection gallery from WooCommerce products.',
+            'focus_keyword' => 'European Gallery'
+        ));
+
+        $pages_created[] = self::create_page(array(
+            'title' => 'Onyx Gallery',
+            'slug' => 'onyx-gallery',
+            'content' => self::get_legacy_gallery_content('Onyx Gallery', 'onyx'),
+            'meta_description' => 'Onyx gallery with all onyx products from WooCommerce.',
+            'focus_keyword' => 'Onyx Gallery'
+        ));
+
+        $pages_created[] = self::create_page(array(
+            'title' => 'Sink Gallery',
+            'slug' => 'sink-gallery',
+            'content' => self::get_legacy_gallery_content('Sink Gallery', 'sink'),
+            'meta_description' => 'Sink gallery with all sink products from WooCommerce.',
+            'focus_keyword' => 'Sink Gallery'
+        ));
         
         return $pages_created;
     }
@@ -242,11 +299,11 @@ class MCD_Auto_Page_Creator {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><strong>Shortcode Used:</strong> [marble_collection_display]</p>
+<p><strong>Shortcode Used:</strong> [marble_collection]</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:shortcode -->
-[marble_collection_display]
+[marble_collection]
 <!-- /wp:shortcode -->
 
 <!-- wp:heading -->
@@ -299,11 +356,11 @@ class MCD_Auto_Page_Creator {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><strong>Shortcode Used:</strong> [marble_collection_display category="kitchen"]</p>
+<p><strong>Shortcode Used:</strong> [marble_collection category="kitchen"]</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:shortcode -->
-[marble_collection_display category="kitchen"]
+[marble_collection category="kitchen"]
 <!-- /wp:shortcode -->
 
 <!-- wp:heading -->
@@ -356,11 +413,11 @@ class MCD_Auto_Page_Creator {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><strong>Shortcode Used:</strong> [marble_collection_display category="' . esc_attr($category) . '"]</p>
+<p><strong>Shortcode Used:</strong> [marble_collection category="' . esc_attr($category) . '"]</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:shortcode -->
-[marble_collection_display category="' . esc_attr($category) . '"]
+[marble_collection category="' . esc_attr($category) . '"]
 <!-- /wp:shortcode -->
 
 <!-- wp:heading -->
@@ -401,11 +458,11 @@ class MCD_Auto_Page_Creator {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><strong>Shortcode Used:</strong> [marble_collection_display category="natural-stone"]</p>
+<p><strong>Shortcode Used:</strong> [marble_collection category="natural-stone"]</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:shortcode -->
-[marble_collection_display category="natural-stone"]
+[marble_collection category="natural-stone"]
 <!-- /wp:shortcode -->
 
 <!-- wp:heading -->
@@ -446,11 +503,11 @@ class MCD_Auto_Page_Creator {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><strong>Shortcode Used:</strong> [marble_collection_display]</p>
+<p><strong>Shortcode Used:</strong> [marble_collection]</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:shortcode -->
-[marble_collection_display]
+[marble_collection]
 <!-- /wp:shortcode -->
 
 <!-- wp:heading -->
@@ -555,6 +612,37 @@ class MCD_Auto_Page_Creator {
 [mcd_cta_buttons layout="vertical"]
 <!-- /wp:shortcode -->';
     }
+
+    /**
+     * Get legacy gallery content (WooCommerce products)
+     */
+    private static function get_legacy_gallery_content($title, $category) {
+        $shortcode = $category === 'all'
+            ? '[marble_collection]'
+            : '[marble_collection category="' . esc_attr($category) . '"]';
+
+        $shortcode_display = str_replace(array('[', ']'), array('&#91;', '&#93;'), $shortcode);
+
+        return '<!-- wp:heading {"level":1} -->
+<h1>' . esc_html($title) . '</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><strong>All products shown on this page come from WooCommerce products.</strong></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p><strong>Shortcode Used:</strong> <code>' . $shortcode_display . '</code></p>
+<!-- /wp:paragraph -->
+
+    <!-- wp:shortcode -->
+    ' . $shortcode . '
+    <!-- /wp:shortcode -->
+
+<!-- wp:paragraph -->
+<p>Use the filters on the left to narrow by category or color.</p>
+<!-- /wp:paragraph -->';
+    }
     
     /**
      * Auto-link created pages to plugin settings
@@ -569,6 +657,13 @@ class MCD_Auto_Page_Creator {
             'fortezza-quartz-collection' => 'mcd_fortezza_page',
             'natural-stone-collection' => 'mcd_natural_stone_page',
             'all-collections' => 'mcd_all_collections_page',
+            'collection-gallery' => 'mcd_collection_page',
+            'quartz-gallery' => 'mcd_quartz_page',
+            'marble-gallery' => 'mcd_marble_page',
+            'granite-gallery' => 'mcd_granite_page',
+            'european-gallery' => 'mcd_european_page',
+            'onyx-gallery' => 'mcd_onyx_page',
+            'sink-gallery' => 'mcd_sink_page',
         );
         
         foreach ($pages as $page) {

@@ -21,9 +21,11 @@ class MCD_Elementor_Widgets {
             return;
         }
         
-        // Register widgets
+        // Register widgets (new and legacy hooks for compatibility)
         add_action('elementor/widgets/register', array(__CLASS__, 'register_widgets'));
+        add_action('elementor/widgets/widgets_registered', array(__CLASS__, 'register_widgets_legacy'));
         add_action('elementor/elements/categories_registered', array(__CLASS__, 'add_category'));
+        add_action('elementor/init', array(__CLASS__, 'ensure_category'));
     }
     
     /**
@@ -37,6 +39,19 @@ class MCD_Elementor_Widgets {
                 'icon' => 'fa fa-plug',
             )
         );
+    }
+
+    /**
+     * Ensure category exists for Elementor versions that call elementor/init only
+     */
+    public static function ensure_category() {
+        if (!class_exists('Elementor\\Plugin')) {
+            return;
+        }
+        $elements_manager = \Elementor\Plugin::instance()->elements_manager;
+        if (method_exists($elements_manager, 'add_category')) {
+            self::add_category($elements_manager);
+        }
     }
     
     /**
@@ -74,6 +89,19 @@ class MCD_Elementor_Widgets {
         // Collection Display Widget
         require_once MCD_PLUGIN_DIR . 'includes/elementor-widgets/collection-display-widget.php';
         $widgets_manager->register(new \MCD_Collection_Display_Widget());
+    }
+
+    /**
+     * Legacy Elementor hook support
+     */
+    public static function register_widgets_legacy() {
+        if (!class_exists('Elementor\\Plugin')) {
+            return;
+        }
+        $widgets_manager = \Elementor\Plugin::instance()->widgets_manager;
+        if ($widgets_manager) {
+            self::register_widgets($widgets_manager);
+        }
     }
 }
 

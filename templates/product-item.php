@@ -43,6 +43,17 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
             <?php echo esc_html($product->get_name()); ?>
         </h2>
         <?php endif; ?>
+
+        <?php
+        $sku = $product->get_sku();
+        if (empty($sku)) {
+            $sku = 'SKU-' . $product->get_id();
+        }
+        ?>
+        <p class="mcd-product-code">
+            <strong><?php esc_html_e('Product Code:', 'collection-for-woo'); ?></strong>
+            <?php echo esc_html($sku); ?>
+        </p>
         
         <?php if ($show_description && $product->get_short_description()): ?>
         <div class="mcd-product-excerpt">
