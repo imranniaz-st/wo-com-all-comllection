@@ -377,22 +377,362 @@ Ready for custom extensions with WordPress filters and actions.
 
 ---
 
+## � GTA Marble Configuration Guide
+
+**Business Context:** Premium European Quartz supplier (21+ years, GTA)  
+**Primary Focus:** Kitchen countertops & professional stone installation  
+**Product Collections:** Superstone, Goodstone, Kstone, Lucent, Fortezza, Natural Stone  
+
+### Recommended Settings for GTA Marble
+
+#### General Settings
+```
+Settings → Marble Collections → General
+
+Collection Page: "All Collections"
+Homepage Gallery: "Kitchen Countertops Gallery"
+Columns Desktop: 5 (show variety)
+Columns Tablet: 3 (tablet browsing)
+Columns Mobile: 1 (touch-friendly)
+Products Per Page: 20 (good balance)
+Default Sorting: Popularity
+Pagination Style: Load More (modern)
+```
+
+#### Display Settings - CRITICAL for Professional Look
+```
+Show Filters: YES (customers need to filter colors)
+Show Search: YES (quick color lookup)
+Show Sorting: YES (organize results)
+Show Product Titles: YES (color names important)
+Show Descriptions: YES (details matter)
+Show Quick View: YES (preview without navigation)
+Show Stock Status: YES (in-stock vs. custom)
+Show Price: NO (quote after selection)
+Lazy Load Images: YES (faster loading)
+```
+
+#### Font Configuration - Professional Stone Aesthetic
+```
+Product Title Font: Montserrat (Bold, Premium)
+Product Description Font: Open Sans (Readable)
+Filter Labels Font: Roboto (Clear)
+Button Font: Poppins (Modern)
+Default Font Size: 16px (readable)
+```
+
+#### Color Scheme - Professional & Premium
+```
+Primary Color: #1a1a1a (Dark Charcoal - luxury feel)
+Accent Color: #d4af37 (Gold - premium accent)
+Filter Background: #f5f5f5 (Light grey)
+Text Color: #333333 (Dark grey)
+Button Background: #1a1a1a (Match primary)
+Button Hover: #d4af37 (Gold accent)
+Border Color: #cccccc (Subtle)
+```
+
+#### Responsive Optimization
+```
+Mobile Optimization: ENABLED
+Mobile Font Size: 14px (readable on small screens)
+Mobile Touch Targets: 44px+ (easy tapping)
+Tablet Font Size: 15px
+Desktop Font Size: 16px
+Image Quality: High (professional showcase)
+Breakpoints: Auto-detect (WP responsive)
+```
+
+#### Header Section Settings
+```
+Hero Section: ENABLED
+Hero Image: Professional kitchen countertop photo
+Hero Headline: "Premium European Quartz Collections"
+Hero Subheading: "In Stock | Professional Installation"
+CTA Button: "Browse Collections"
+CTA Button Style: Primary (Gold accent)
+```
+
+### Collection Pages Setup - GTA Marble Specific
+
+#### Primary Collections (Kitchen Countertops Focus)
+
+**Page 1: Kitchen Countertops Gallery**
+```
+Page Title: Kitchen Countertops Gallery
+Slug: kitchen-countertops
+Description: Professional kitchen countertop installation
+Featured Image: Modern kitchen with quartz countertop
+Categories: All (or highlight kitchen-specific products)
+Layout: 5 columns desktop, 3 tablet, 1 mobile
+Sort Default: Popularity (show most popular)
+Filter: ENABLE all filters
+Status: Homepage featured
+Menu: Primary navigation (TOP PRIORITY)
+```
+
+**Page 2: Superstone Quartz Collection** (PRIORITY #1)
+```
+Page Title: Superstone Quartz Collection
+Slug: superstone-quartz-collection
+Description: Premium European Superstone Quartz - 50+ Colors
+Featured Image: Superstone slab showcase
+Category: superstone-quartz
+Layout: 5 columns desktop, 3 tablet, 1 mobile
+Products: 20+ per page
+Filters: ENABLED (color, pattern, finish, quality)
+Search: ENABLED
+Menu: Collections > Superstone Quartz
+```
+
+**Page 3: Goodstone Quartz Collection** (PRIORITY #2)
+```
+Page Title: Goodstone Quartz Collection
+Slug: goodstone-quartz-collection
+Description: Quality European Goodstone Quartz - 40+ Colors
+Featured Image: Goodstone slab display
+Category: goodstone-quartz
+Layout: 5 columns desktop, 3 tablet, 1 mobile
+Products: 20+ per page
+Filters: ENABLED
+Search: ENABLED
+Menu: Collections > Goodstone Quartz
+```
+
+**Page 4: Kstone Quartz Collection** (PRIORITY #3)
+```
+Page Title: Kstone Quartz Collection
+Slug: kstone-quartz-collection
+Description: Reliable European Kstone Quartz - 35+ Colors
+Featured Image: Kstone color palette
+Category: kstone-quartz
+Layout: 5 columns desktop, 3 tablet, 1 mobile
+Products: 20+ per page
+Filters: ENABLED
+Search: ENABLED
+Menu: Collections > Kstone Quartz
+```
+
+**Page 5: Lucent Quartz Collection** (PRIORITY #4)
+```
+Page Title: Lucent Quartz Collection
+Slug: lucent-quartz-collection
+Description: Modern European Lucent Quartz - 45+ Colors
+Featured Image: Lucent sparkle showcase
+Category: lucent-quartz
+Layout: 5 columns desktop, 3 tablet, 1 mobile
+Products: 20+ per page
+Filters: ENABLED
+Search: ENABLED
+Menu: Collections > Lucent Quartz
+```
+
+#### Secondary Collections
+
+**Page 6: Natural Stone Gallery**
+```
+Page Title: Natural Stone Collection
+Slug: natural-stone-collection
+Description: Premium Marble, Granite & Porcelain
+Featured Image: Natural stone variety
+Categories: natural-marble, granite, porcelain
+Layout: 4 columns desktop, 2 tablet, 1 mobile
+Products: 16+ per page
+Filters: ENABLED (stone type, color, finish)
+Menu: Collections > Natural Stone
+```
+
+**Page 7: Fortezza Quartz (Custom Orders)**
+```
+Page Title: Fortezza Quartz Gallery
+Slug: fortezza-quartz-collection
+Description: Premium Custom Quartz Orders - 60+ Colors
+Featured Image: Premium color selection
+Category: fortezza-quartz
+Layout: 5 columns, 3 tablet, 1 mobile
+Note: Mark products as "Made to Order"
+CTA: "Request Custom Quote"
+```
+
+#### Service-Based Pages (Not galleries, but important)
+
+**Page 8: Bathroom Vanities**
+```
+No gallery widget needed
+Just showcase products in Elementor
+Focus on before/after images
+Include CTA for quote
+```
+
+**Page 9: All Collections Master Page**
+```
+Enable "All Collections" in plugin settings
+Shows ALL products
+All filters available
+Search across entire catalog
+Default: Popularity sort
+```
+
+### Menu Navigation Structure - GTA Marble
+
+```
+HEADER MENU:
+├── Home (Home page)
+├── Kitchen Countertops (HIGH PRIORITY)
+├── Collections
+│   ├── All Collections
+│   ├── Superstone Quartz
+│   ├── Goodstone Quartz
+│   ├── Kstone Quartz
+│   └── Lucent Quartz
+├── Services
+│   ├── Bathroom Vanities
+│   ├── Backsplash
+│   ├── Commercial
+│   └── Installation
+├── About Us
+├── Contact (Sticky in header)
+└── Request Quote (CTA button)
+```
+
+### Admin Settings - Performance Optimization
+
+```
+Settings → Marble Collections → Performance
+
+Lazy Load: ENABLED (faster first load)
+Minify CSS: ENABLED (smaller file size)
+Minify JS: ENABLED (faster execution)
+Caching: ENABLED (use WP Rocket or W3TC)
+Cache Duration: 24 hours
+Database Optimization: Monthly
+```
+
+### SEO Configuration - Critical for "Kitchen Countertops" Ranking
+
+```
+Focus Keyword Strategy:
+- Homepage: "Kitchen Countertops GTA"
+- Kitchen Gallery: "Kitchen Countertops Toronto"
+- Superstone: "Superstone Quartz GTA"
+- All Collections: "Quartz Countertops"
+- Product pages: "[Color] Quartz Countertop"
+
+Meta Descriptions:
+- 155-160 characters
+- Include "Kitchen Countertops" where relevant
+- Include "GTA" or "Toronto" for location
+- Include "In Stock" to stand out in search
+
+Internal Links:
+- Homepage → Kitchen Countertops (primary link)
+- Kitchen page → All Collections
+- Collection pages → Similar collections
+- Products → Related colors
+```
+
+### Product Display Best Practices
+
+```
+Image Requirements:
+- Minimum: 1920x1440px (high quality)
+- Format: JPG for photos
+- Optimization: Use Smush plugin
+- Count: 3-5 images per product
+
+Product Information:
+- Title: "[Color] - [Collection] Quartz"
+- Description: Color details, patterns, uses
+- Attributes: Color, Pattern, Finish, Quality
+- Stock: Set realistic quantities
+- Price: Quote required (show contact CTA)
+
+Swatch/Variations:
+- Color hex code for each shade
+- Pattern close-up image
+- Finish options (if available)
+- Quality level indicator
+```
+
+### Elementor Integration - Multi-Collection Page Example
+
+```
+CREATE PAGE: "Quartz Collections Showroom"
+
+[Section 1: Hero]
+"PREMIUM EUROPEAN QUARTZ"
+"In Stock Collections | Professional Installation"
+[Button] "Browse Now"
+
+[Section 2: Quartz Collections]
+[Marble Collection Widget 1]
+- Collection: Superstone
+- Columns: 5/3/1
+- Products: 20
+- Filters: ON
+
+[Divider]
+
+[Marble Collection Widget 2]
+- Collection: Goodstone
+- Columns: 5/3/1
+- Products: 20
+- Filters: ON
+
+[Divider]
+
+[Marble Collection Widget 3]
+- Collection: Kstone
+- Columns: 5/3/1
+- Products: 20
+- Filters: ON
+
+[Divider]
+
+[Marble Collection Widget 4]
+- Collection: Lucent
+- Columns: 5/3/1
+- Products: 20
+- Filters: ON
+
+[Section 3: CTA]
+"Can't find what you're looking for?"
+"Custom Quartz Orders Available"
+[Button] "Request Custom Quote"
+
+[Section 4: Contact]
+Phone: +1 (647) 291-2686
+Email: info@gtamarble.com
+Address: 44 Goodmark Place, Etobicoke
+Hours: Mon-Fri 9am-6pm, Sat 10am-4pm
+```
+
+---
+
 ## 🎯 Final Checklist
 
 Before going live:
 
 - [ ] Plugin activated
 - [ ] WooCommerce active
-- [ ] Collection page created
-- [ ] Products assigned to categories
-- [ ] Products have colors
-- [ ] Settings configured
-- [ ] Fonts customized
-- [ ] Mobile tested
-- [ ] Desktop tested
-- [ ] All filters work
-- [ ] Search works
-- [ ] Responsive looks good
+- [ ] All 5+ collections created as categories
+- [ ] Gallery pages created (Kitchen, Superstone, Goodstone, Kstone, Lucent)
+- [ ] 50+ products uploaded with high-quality images
+- [ ] All products assigned to appropriate categories
+- [ ] Product attributes set (color, pattern, finish, quality)
+- [ ] Plugin settings configured per recommendations
+- [ ] Font: Montserrat (titles), Open Sans (description)
+- [ ] Colors: #1a1a1a primary, #d4af37 accent
+- [ ] Responsive tested (desktop, tablet, mobile)
+- [ ] All filters working (color, pattern, quality)
+- [ ] Search functionality tested
+- [ ] Menu navigation set up correctly
+- [ ] Kitchen Countertops page featured prominently
+- [ ] Contact information displayed correctly
+- [ ] SEO metadata configured
+- [ ] Performance optimized (lazy load, caching)
+- [ ] Mobile optimization verified
+- [ ] Homepage shows Kitchen Countertops priority
 
 ---
 
