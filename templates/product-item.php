@@ -34,6 +34,7 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
             
             <?php if ($show_quick_view): ?>
             <span class="mcd-quick-view-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                <i class="fas fa-eye"></i>
                 <?php esc_html_e('Quick View', 'collection-for-woo'); ?>
             </span>
             <?php endif; ?>
@@ -44,17 +45,6 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
             <?php echo esc_html($product->get_name()); ?>
         </h2>
         <?php endif; ?>
-
-        <?php
-        $sku = $product->get_sku();
-        if (empty($sku)) {
-            $sku = 'SKU-' . $product->get_id();
-        }
-        ?>
-        <p class="mcd-product-code">
-            <strong><?php esc_html_e('Product Code:', 'collection-for-woo'); ?></strong>
-            <?php echo esc_html($sku); ?>
-        </p>
         
         <?php
         // Display color swatches

@@ -124,6 +124,14 @@ class Marble_Collection_Display {
      * Register assets
      */
     public function register_assets() {
+        // Register Font Awesome
+        wp_register_style(
+            'font-awesome',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+            array(),
+            '6.4.0'
+        );
+        
         // Register styles
         wp_register_style(
             'marble-collection-style',
@@ -175,6 +183,7 @@ class Marble_Collection_Display {
         }
         
         if ($should_enqueue) {
+            wp_enqueue_style('font-awesome');
             wp_enqueue_style('marble-collection-style');
             wp_enqueue_style('mcd-frontend-features', MCD_PLUGIN_URL . 'assets/css/frontend-features.css', array(), MCD_VERSION);
             wp_enqueue_script('marble-collection-script');
