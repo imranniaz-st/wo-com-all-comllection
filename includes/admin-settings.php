@@ -949,35 +949,35 @@ class MCD_Admin_Settings {
     /**
      * Sanitize integer options
      */
-    private function sanitize_absint($value) {
+    public function sanitize_absint($value) {
         return absint($value);
     }
 
     /**
      * Sanitize text options
      */
-    private function sanitize_text($value) {
+    public function sanitize_text($value) {
         return sanitize_text_field($value);
     }
 
     /**
      * Sanitize true/false string options
      */
-    private function sanitize_true_false($value) {
+    public function sanitize_true_false($value) {
         return ($value === 'true' || $value === true || $value === '1' || $value === 1) ? 'true' : 'false';
     }
 
     /**
      * Sanitize yes/no string options
      */
-    private function sanitize_yes_no($value) {
+    public function sanitize_yes_no($value) {
         return ($value === 'yes' || $value === true || $value === '1' || $value === 1) ? 'yes' : 'no';
     }
 
     /**
      * Sanitize color values
      */
-    private function sanitize_color($value) {
+    public function sanitize_color($value) {
         $color = sanitize_hex_color($value);
         return $color ? $color : '';
     }
@@ -985,7 +985,7 @@ class MCD_Admin_Settings {
     /**
      * Sanitize orderby option
      */
-    private function sanitize_orderby($value) {
+    public function sanitize_orderby($value) {
         $allowed = array('menu_order', 'popularity', 'date', 'title');
         return in_array($value, $allowed, true) ? $value : 'menu_order';
     }
