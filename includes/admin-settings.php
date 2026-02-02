@@ -1225,9 +1225,29 @@ class MCD_Admin_Settings {
         echo '<p><strong>' . esc_html__('Automatically create all necessary pages with content and shortcodes!', 'collection-for-woo') . '</strong></p>';
         echo '<p>' . esc_html__('This will create 11 pages: Home, Kitchen Countertops, Collection pages (Superstone, Goodstone, Kstone, Lucent, Fortezza, Natural Stone), All Collections, About, and Contact. Each page includes the appropriate shortcodes and displays them for reference.', 'collection-for-woo') . '</p>';
         
-        // Check if pages were just created
+        // Check if pages were just created and show detailed results
         if (isset($_GET['pages_created']) && $_GET['pages_created'] == 'yes') {
-            echo '<div class="notice notice-success"><p><strong>' . esc_html__('✅ Success! All pages have been created automatically.', 'collection-for-woo') . '</strong></p></div>';
+            $created_count = isset($_GET['created']) ? intval($_GET['created']) : 0;
+            $existing_count = isset($_GET['existing']) ? intval($_GET['existing']) : 0;
+            $failed_count = isset($_GET['failed']) ? intval($_GET['failed']) : 0;
+            
+            echo '<div class="notice notice-success" style="border-left-color:#46b450; padding:15px;">';
+            echo '<h3 style="margin-top:0;">✅ ' . esc_html__('Pages Created & Saved Successfully!', 'collection-for-woo') . '</h3>';
+            
+            if ($created_count > 0) {
+                echo '<p><strong>' . sprintf(esc_html__('✓ Created: %d new pages saved to database', 'collection-for-woo'), $created_count) . '</strong></p>';
+            }
+            
+            if ($existing_count > 0) {
+                echo '<p><strong>' . sprintf(esc_html__('ℹ Existing: %d pages already existed (not overwritten)', 'collection-for-woo'), $existing_count) . '</strong></p>';
+            }
+            
+            if ($failed_count > 0) {
+                echo '<p style="color:#dc3232;"><strong>' . sprintf(esc_html__('✗ Failed: %d pages could not be created', 'collection-for-woo'), $failed_count) . '</strong></p>';
+            }
+            
+            echo '<p><a href="' . esc_url(admin_url('edit.php?post_type=page')) . '" class="button button-primary">' . esc_html__('View All Pages', 'collection-for-woo') . '</a></p>';
+            echo '</div>';
         }
         
         ?>
@@ -1240,7 +1260,10 @@ class MCD_Admin_Settings {
                 </button>
             </p>
             <p class="description">
-                <?php esc_html_e('⚠️ Note: If pages already exist with the same slugs, they will not be overwritten.', 'collection-for-woo'); ?>
+                <?php esc_html_e('⚠️ Note: All pages are saved permanently to the database. If pages already exist with the same slugs, they will not be overwritten.', 'collection-for-woo'); ?>
+            </p>
+            <p class="description">
+                <?php esc_html_e('💾 All created pages are saved with: Content, Shortcodes, SEO metadata, and can be viewed in Pages → All Pages', 'collection-for-woo'); ?>
             </p>
         </form>
         <?php
@@ -1457,17 +1480,37 @@ class MCD_Admin_Settings {
         // Load auto page creator
         require_once MCD_PLUGIN_DIR . 'includes/auto-page-creator.php';
         
-        // Create all pages
+        // Create all pages (they are saved to database automatically)
         $pages = MCD_Auto_Page_Creator::create_all_pages();
         
         // Auto-link pages to settings
         MCD_Auto_Page_Creator::auto_link_pages($pages);
         
-        // Redirect back with success message
+        // Count results
+        $created_count = 0;
+        $existing_count = 0;
+        $failed_count = 0;
+        
+        foreach ($pages as $page) {
+            if (isset($page['status'])) {
+                if ($page['status'] === 'created') {
+                    $created_count++;
+                } elseif ($page['status'] === 'exists') {
+                    $existing_count++;
+                } elseif ($page['status'] === 'failed') {
+                    $failed_count++;
+                }
+            }
+        }
+        
+        // Redirect back with success message and statistics
         $redirect_url = add_query_arg(
             array(
                 'page' => 'marble-collection-settings',
-                'pages_created' => 'yes'
+                'pages_created' => 'yes',
+                'created' => $created_count,
+                'existing' => $existing_count,
+                'failed' => $failed_count
             ),
             admin_url('admin.php')
         );

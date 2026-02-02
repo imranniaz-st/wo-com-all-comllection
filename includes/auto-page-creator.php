@@ -136,7 +136,7 @@ class MCD_Auto_Page_Creator {
             );
         }
         
-        // Create new page
+        // Create new page with all data
         $page_data = array(
             'post_title' => $args['title'],
             'post_name' => $args['slug'],
@@ -144,9 +144,12 @@ class MCD_Auto_Page_Creator {
             'post_status' => 'publish',
             'post_type' => 'page',
             'post_author' => get_current_user_id(),
+            'comment_status' => 'closed',
+            'ping_status' => 'closed',
         );
         
-        $page_id = wp_insert_post($page_data);
+        // Insert page into database (this saves it permanently)
+        $page_id = wp_insert_post($page_data, true);
         
         if ($page_id && !is_wp_error($page_id)) {
             // Set page template if specified
@@ -165,15 +168,33 @@ class MCD_Auto_Page_Creator {
                 update_post_meta($page_id, '_elementor_edit_mode', 'builder');
             }
             
+            // Mark page as auto-created for reference
+            update_post_meta($page_id, '_mcd_auto_created', true);
+            update_post_meta($page_id, '_mcd_created_date', current_time('mysql'));
+            
+            // Clear any caches to ensure page appears immediately
+            clean_post_cache($page_id);
+            
+            // Flush rewrite rules so permalinks work
+            flush_rewrite_rules();
+            
             return array(
                 'id' => $page_id,
                 'title' => $args['title'],
                 'status' => 'created',
-                'url' => get_permalink($page_id)
+                'url' => get_permalink($page_id),
+                'saved' => true
             );
         }
         
-        return array('status' => 'failed', 'title' => $args['title']);
+        // If failed, return error details
+        $error_message = is_wp_error($page_id) ? $page_id->get_error_message() : 'Unknown error';
+        return array(
+            'status' => 'failed', 
+            'title' => $args['title'],
+            'error' => $error_message,
+            'saved' => false
+        );
     }
     
     /**
