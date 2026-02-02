@@ -79,15 +79,13 @@ class Marble_Collection_Display {
         // Load frontend display features
         require_once MCD_PLUGIN_DIR . 'includes/frontend-display.php';
         
-        // Load Elementor support (gracefully if not present)
-        add_action('elementor/loaded', array($this, 'load_elementor_support'));
-    }
-    
-    /**
-     * Load Elementor support when Elementor is ready
-     */
-    public function load_elementor_support() {
-        require_once MCD_PLUGIN_DIR . 'includes/elementor-support.php';
+        // Load Elementor integration
+        require_once MCD_PLUGIN_DIR . 'includes/elementor-integration.php';
+        
+        // Load auto page creator (admin only)
+        if (is_admin()) {
+            require_once MCD_PLUGIN_DIR . 'includes/auto-page-creator.php';
+        }
     }
     
     /**

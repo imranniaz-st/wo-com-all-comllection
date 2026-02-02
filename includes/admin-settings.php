@@ -19,6 +19,7 @@ class MCD_Admin_Settings {
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_filter('page_template', array($this, 'load_collection_template'));
+        add_action('admin_post_mcd_create_pages', array($this, 'handle_create_pages'));
     }
     
     /**
@@ -1064,6 +1065,14 @@ class MCD_Admin_Settings {
      * Add GTA Marble specific settings sections
      */
     private function add_gta_marble_sections() {
+        // Auto Page Creator Section
+        add_settings_section(
+            'mcd_auto_pages',
+            __('🚀 Quick Setup - Auto Create Pages', 'collection-for-woo'),
+            array($this, 'render_auto_pages_section'),
+            'mcd_settings'
+        );
+        
         // Business Information Section
         add_settings_section(
             'mcd_business_info',
@@ -1207,6 +1216,34 @@ class MCD_Admin_Settings {
             'mcd_settings',
             'mcd_collections'
         );
+    }
+
+    /**
+     * Render auto pages section
+     */
+    public function render_auto_pages_section() {
+        echo '<p><strong>' . esc_html__('Automatically create all necessary pages with content and shortcodes!', 'collection-for-woo') . '</strong></p>';
+        echo '<p>' . esc_html__('This will create 11 pages: Home, Kitchen Countertops, Collection pages (Superstone, Goodstone, Kstone, Lucent, Fortezza, Natural Stone), All Collections, About, and Contact. Each page includes the appropriate shortcodes and displays them for reference.', 'collection-for-woo') . '</p>';
+        
+        // Check if pages were just created
+        if (isset($_GET['pages_created']) && $_GET['pages_created'] == 'yes') {
+            echo '<div class="notice notice-success"><p><strong>' . esc_html__('✅ Success! All pages have been created automatically.', 'collection-for-woo') . '</strong></p></div>';
+        }
+        
+        ?>
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <input type="hidden" name="action" value="mcd_create_pages">
+            <?php wp_nonce_field('mcd_create_pages', 'mcd_create_pages_nonce'); ?>
+            <p>
+                <button type="submit" class="button button-primary button-hero" style="background:#d4af37; border-color:#c49f2e; text-shadow:none; font-size:16px; height:auto; padding:15px 30px;">
+                    🚀 <?php esc_html_e('Create All Pages Automatically', 'collection-for-woo'); ?>
+                </button>
+            </p>
+            <p class="description">
+                <?php esc_html_e('⚠️ Note: If pages already exist with the same slugs, they will not be overwritten.', 'collection-for-woo'); ?>
+            </p>
+        </form>
+        <?php
     }
 
     /**
@@ -1401,6 +1438,42 @@ class MCD_Admin_Settings {
      */
     public function sanitize_int($value) {
         return absint($value);
+    }
+    
+    /**
+     * Handle page creation
+     */
+    public function handle_create_pages() {
+        // Verify nonce
+        if (!isset($_POST['mcd_create_pages_nonce']) || !wp_verify_nonce($_POST['mcd_create_pages_nonce'], 'mcd_create_pages')) {
+            wp_die(__('Security check failed', 'collection-for-woo'));
+        }
+        
+        // Check user permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action', 'collection-for-woo'));
+        }
+        
+        // Load auto page creator
+        require_once MCD_PLUGIN_DIR . 'includes/auto-page-creator.php';
+        
+        // Create all pages
+        $pages = MCD_Auto_Page_Creator::create_all_pages();
+        
+        // Auto-link pages to settings
+        MCD_Auto_Page_Creator::auto_link_pages($pages);
+        
+        // Redirect back with success message
+        $redirect_url = add_query_arg(
+            array(
+                'page' => 'marble-collection-settings',
+                'pages_created' => 'yes'
+            ),
+            admin_url('admin.php')
+        );
+        
+        wp_redirect($redirect_url);
+        exit;
     }
 }
 
