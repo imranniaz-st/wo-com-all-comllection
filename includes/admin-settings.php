@@ -19,6 +19,7 @@ class MCD_Admin_Settings {
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_filter('page_template', array($this, 'load_collection_template'));
+        add_action('admin_post_mcd_create_pages', array($this, 'handle_create_pages'));
     }
     
     /**
@@ -986,12 +987,541 @@ class MCD_Admin_Settings {
      * Sanitize orderby option
      */
     public function sanitize_orderby($value) {
-        $allowed = array('menu_order', 'popularity', 'date', 'title');
+        $allowed = array('menu_order', 'popularity', 'date', 'title', 'price', 'price-desc', 'rating');
         return in_array($value, $allowed, true) ? $value : 'menu_order';
+    }
+
+    /**
+     * Add additional settings for GTA Marble and advanced features
+     */
+    public function add_advanced_settings() {
+        // Stock status settings
+        register_setting('mcd_settings', 'mcd_show_stock_status', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_show_quick_view', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_lazy_load_images', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        
+        // GTA Marble specific settings
+        register_setting('mcd_settings', 'mcd_business_name', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_phone_1', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_phone_2', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_email', array('sanitize_callback' => 'sanitize_email'));
+        register_setting('mcd_settings', 'mcd_address', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_hours', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_service_area', array('sanitize_callback' => array($this, 'sanitize_text')));
+        
+        // Hero section settings
+        register_setting('mcd_settings', 'mcd_show_hero', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_hero_title', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_hero_subtitle', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_hero_cta_text', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_hero_image', array('sanitize_callback' => array($this, 'sanitize_int')));
+        
+        // Kitchen countertops priority
+        register_setting('mcd_settings', 'mcd_kitchen_priority', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_kitchen_page_id', array('sanitize_callback' => array($this, 'sanitize_int')));
+        
+        // Collection settings for GTA Marble
+        register_setting('mcd_settings', 'mcd_superstone_page', array('sanitize_callback' => array($this, 'sanitize_int')));
+        register_setting('mcd_settings', 'mcd_goodstone_page', array('sanitize_callback' => array($this, 'sanitize_int')));
+        register_setting('mcd_settings', 'mcd_kstone_page', array('sanitize_callback' => array($this, 'sanitize_int')));
+        register_setting('mcd_settings', 'mcd_lucent_page', array('sanitize_callback' => array($this, 'sanitize_int')));
+        register_setting('mcd_settings', 'mcd_fortezza_page', array('sanitize_callback' => array($this, 'sanitize_int')));
+        register_setting('mcd_settings', 'mcd_natural_stone_page', array('sanitize_callback' => array($this, 'sanitize_int')));
+        register_setting('mcd_settings', 'mcd_all_collections_page', array('sanitize_callback' => array($this, 'sanitize_int')));
+        
+        // Multi-location support
+        register_setting('mcd_settings', 'mcd_enable_multi_location', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_location_1_name', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_location_1_address', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_location_1_phone', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_location_2_name', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_location_2_address', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_location_2_phone', array('sanitize_callback' => array($this, 'sanitize_text')));
+        
+        // Performance settings
+        register_setting('mcd_settings', 'mcd_minify_css', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_minify_js', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_enable_caching', array('sanitize_callback' => array($this, 'sanitize_true_false')));
+        register_setting('mcd_settings', 'mcd_cache_duration', array('sanitize_callback' => array($this, 'sanitize_int')));
+        
+        // SEO settings
+        register_setting('mcd_settings', 'mcd_seo_focus_keywords', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_seo_location', array('sanitize_callback' => array($this, 'sanitize_text')));
+        
+        // CTA button settings
+        register_setting('mcd_settings', 'mcd_primary_cta_text', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_primary_cta_color', array('sanitize_callback' => array($this, 'sanitize_color')));
+        register_setting('mcd_settings', 'mcd_secondary_cta_text', array('sanitize_callback' => array($this, 'sanitize_text')));
+        register_setting('mcd_settings', 'mcd_secondary_cta_color', array('sanitize_callback' => array($this, 'sanitize_color')));
+        
+        // Custom CSS
+        register_setting('mcd_settings', 'mcd_custom_css', array('sanitize_callback' => array($this, 'sanitize_css')));
+        
+        // Add settings sections and fields for GTA Marble
+        $this->add_gta_marble_sections();
+    }
+
+    /**
+     * Add GTA Marble specific settings sections
+     */
+    private function add_gta_marble_sections() {
+        // Auto Page Creator Section
+        add_settings_section(
+            'mcd_auto_pages',
+            __('🚀 Quick Setup - Auto Create Pages', 'collection-for-woo'),
+            array($this, 'render_auto_pages_section'),
+            'mcd_settings'
+        );
+        
+        // Business Information Section
+        add_settings_section(
+            'mcd_business_info',
+            __('Business Information', 'collection-for-woo'),
+            array($this, 'render_business_info_section'),
+            'mcd_settings'
+        );
+
+        add_settings_field(
+            'mcd_business_name',
+            __('Business Name', 'collection-for-woo'),
+            array($this, 'render_business_name_field'),
+            'mcd_settings',
+            'mcd_business_info'
+        );
+
+        add_settings_field(
+            'mcd_phone_1',
+            __('Primary Phone Number', 'collection-for-woo'),
+            array($this, 'render_phone_1_field'),
+            'mcd_settings',
+            'mcd_business_info'
+        );
+
+        add_settings_field(
+            'mcd_phone_2',
+            __('Secondary Phone Number', 'collection-for-woo'),
+            array($this, 'render_phone_2_field'),
+            'mcd_settings',
+            'mcd_business_info'
+        );
+
+        add_settings_field(
+            'mcd_email',
+            __('Contact Email', 'collection-for-woo'),
+            array($this, 'render_email_field'),
+            'mcd_settings',
+            'mcd_business_info'
+        );
+
+        add_settings_field(
+            'mcd_address',
+            __('Business Address', 'collection-for-woo'),
+            array($this, 'render_address_field'),
+            'mcd_settings',
+            'mcd_business_info'
+        );
+
+        add_settings_field(
+            'mcd_hours',
+            __('Business Hours', 'collection-for-woo'),
+            array($this, 'render_hours_field'),
+            'mcd_settings',
+            'mcd_business_info'
+        );
+
+        add_settings_field(
+            'mcd_service_area',
+            __('Service Area', 'collection-for-woo'),
+            array($this, 'render_service_area_field'),
+            'mcd_settings',
+            'mcd_business_info'
+        );
+
+        // Collections Section
+        add_settings_section(
+            'mcd_collections',
+            __('GTA Marble Collections', 'collection-for-woo'),
+            array($this, 'render_collections_section'),
+            'mcd_settings'
+        );
+
+        add_settings_field(
+            'mcd_kitchen_priority',
+            __('Enable Kitchen Countertops Priority', 'collection-for-woo'),
+            array($this, 'render_kitchen_priority_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_kitchen_page_id',
+            __('Kitchen Countertops Page', 'collection-for-woo'),
+            array($this, 'render_kitchen_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_superstone_page',
+            __('Superstone Quartz Collection Page', 'collection-for-woo'),
+            array($this, 'render_superstone_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_goodstone_page',
+            __('Goodstone Quartz Collection Page', 'collection-for-woo'),
+            array($this, 'render_goodstone_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_kstone_page',
+            __('Kstone Quartz Collection Page', 'collection-for-woo'),
+            array($this, 'render_kstone_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_lucent_page',
+            __('Lucent Quartz Collection Page', 'collection-for-woo'),
+            array($this, 'render_lucent_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_fortezza_page',
+            __('Fortezza Quartz (Custom) Collection Page', 'collection-for-woo'),
+            array($this, 'render_fortezza_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_natural_stone_page',
+            __('Natural Stone Collection Page', 'collection-for-woo'),
+            array($this, 'render_natural_stone_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+
+        add_settings_field(
+            'mcd_all_collections_page',
+            __('All Collections Master Page', 'collection-for-woo'),
+            array($this, 'render_all_collections_page_field'),
+            'mcd_settings',
+            'mcd_collections'
+        );
+    }
+
+    /**
+     * Render auto pages section
+     */
+    public function render_auto_pages_section() {
+        echo '<p><strong>' . esc_html__('Automatically create all necessary pages with content and shortcodes!', 'collection-for-woo') . '</strong></p>';
+        echo '<p>' . esc_html__('This will create 11 pages: Home, Kitchen Countertops, Collection pages (Superstone, Goodstone, Kstone, Lucent, Fortezza, Natural Stone), All Collections, About, and Contact. Each page includes the appropriate shortcodes and displays them for reference.', 'collection-for-woo') . '</p>';
+        
+        // Check if pages were just created and show detailed results
+        if (isset($_GET['pages_created']) && $_GET['pages_created'] == 'yes') {
+            $created_count = isset($_GET['created']) ? intval($_GET['created']) : 0;
+            $existing_count = isset($_GET['existing']) ? intval($_GET['existing']) : 0;
+            $failed_count = isset($_GET['failed']) ? intval($_GET['failed']) : 0;
+            
+            echo '<div class="notice notice-success" style="border-left-color:#46b450; padding:15px;">';
+            echo '<h3 style="margin-top:0;">✅ ' . esc_html__('Pages Created & Saved Successfully!', 'collection-for-woo') . '</h3>';
+            
+            if ($created_count > 0) {
+                echo '<p><strong>' . sprintf(esc_html__('✓ Created: %d new pages saved to database', 'collection-for-woo'), $created_count) . '</strong></p>';
+            }
+            
+            if ($existing_count > 0) {
+                echo '<p><strong>' . sprintf(esc_html__('ℹ Existing: %d pages already existed (not overwritten)', 'collection-for-woo'), $existing_count) . '</strong></p>';
+            }
+            
+            if ($failed_count > 0) {
+                echo '<p style="color:#dc3232;"><strong>' . sprintf(esc_html__('✗ Failed: %d pages could not be created', 'collection-for-woo'), $failed_count) . '</strong></p>';
+            }
+            
+            echo '<p><a href="' . esc_url(admin_url('edit.php?post_type=page')) . '" class="button button-primary">' . esc_html__('View All Pages', 'collection-for-woo') . '</a></p>';
+            echo '</div>';
+        }
+        
+        ?>
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <input type="hidden" name="action" value="mcd_create_pages">
+            <?php wp_nonce_field('mcd_create_pages', 'mcd_create_pages_nonce'); ?>
+            <p>
+                <button type="submit" class="button button-primary button-hero" style="background:#d4af37; border-color:#c49f2e; text-shadow:none; font-size:16px; height:auto; padding:15px 30px;">
+                    🚀 <?php esc_html_e('Create All Pages Automatically', 'collection-for-woo'); ?>
+                </button>
+            </p>
+            <p class="description">
+                <?php esc_html_e('⚠️ Note: All pages are saved permanently to the database. If pages already exist with the same slugs, they will not be overwritten.', 'collection-for-woo'); ?>
+            </p>
+            <p class="description">
+                <?php esc_html_e('💾 All created pages are saved with: Content, Shortcodes, SEO metadata, and can be viewed in Pages → All Pages', 'collection-for-woo'); ?>
+            </p>
+        </form>
+        <?php
+    }
+
+    /**
+     * Render business info section
+     */
+    public function render_business_info_section() {
+        echo '<p>' . esc_html__('Configure GTA Marble business information displayed on the website', 'collection-for-woo') . '</p>';
+    }
+
+    /**
+     * Render business name field
+     */
+    public function render_business_name_field() {
+        $value = get_option('mcd_business_name', 'GTA Marble');
+        ?>
+        <input type="text" name="mcd_business_name" value="<?php echo esc_attr($value); ?>" placeholder="GTA Marble" style="width: 300px;" />
+        <p class="description"><?php esc_html_e('Your business name (default: GTA Marble)', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render phone 1 field
+     */
+    public function render_phone_1_field() {
+        $value = get_option('mcd_phone_1', '');
+        ?>
+        <input type="tel" name="mcd_phone_1" value="<?php echo esc_attr($value); ?>" placeholder="+1 (647) 291-2686" style="width: 300px;" />
+        <p class="description"><?php esc_html_e('Primary contact phone number', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render phone 2 field
+     */
+    public function render_phone_2_field() {
+        $value = get_option('mcd_phone_2', '');
+        ?>
+        <input type="tel" name="mcd_phone_2" value="<?php echo esc_attr($value); ?>" placeholder="+1 (647) 619-9753" style="width: 300px;" />
+        <p class="description"><?php esc_html_e('Secondary contact phone number (optional)', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render email field
+     */
+    public function render_email_field() {
+        $value = get_option('mcd_email', '');
+        ?>
+        <input type="email" name="mcd_email" value="<?php echo esc_attr($value); ?>" placeholder="info@gtamarble.com" style="width: 300px;" />
+        <p class="description"><?php esc_html_e('Business contact email address', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render address field
+     */
+    public function render_address_field() {
+        $value = get_option('mcd_address', '');
+        ?>
+        <textarea name="mcd_address" style="width: 100%; max-width: 500px; height: 80px;"><?php echo esc_textarea($value); ?></textarea>
+        <p class="description"><?php esc_html_e('Business address: 44 Goodmark Place, Unit 16, Etobicoke, ON M9W 6N8', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render hours field
+     */
+    public function render_hours_field() {
+        $value = get_option('mcd_hours', '');
+        ?>
+        <textarea name="mcd_hours" style="width: 100%; max-width: 500px; height: 80px;"><?php echo esc_textarea($value); ?></textarea>
+        <p class="description"><?php esc_html_e('Business hours (e.g., Mon-Fri 9am-6pm, Sat 10am-4pm)', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render service area field
+     */
+    public function render_service_area_field() {
+        $value = get_option('mcd_service_area', '');
+        ?>
+        <textarea name="mcd_service_area" style="width: 100%; max-width: 500px; height: 60px;"><?php echo esc_textarea($value); ?></textarea>
+        <p class="description"><?php esc_html_e('Service area coverage (e.g., GTA + 500km Ontario coverage)', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render collections section
+     */
+    public function render_collections_section() {
+        echo '<p>' . esc_html__('Configure gallery pages for each collection. Select the pages you created for each collection type.', 'collection-for-woo') . '</p>';
+    }
+
+    /**
+     * Render kitchen priority field
+     */
+    public function render_kitchen_priority_field() {
+        $value = get_option('mcd_kitchen_priority', 'true');
+        ?>
+        <label>
+            <input type="checkbox" name="mcd_kitchen_priority" value="true" <?php checked($value, 'true'); ?> />
+            <?php esc_html_e('Enable Kitchen Countertops as homepage priority', 'collection-for-woo'); ?>
+        </label>
+        <p class="description"><?php esc_html_e('When enabled, Kitchen Countertops featured prominently on homepage for SEO', 'collection-for-woo'); ?></p>
+        <?php
+    }
+
+    /**
+     * Render kitchen page field
+     */
+    public function render_kitchen_page_field() {
+        $this->render_page_dropdown('mcd_kitchen_page_id', __('Kitchen Countertops Gallery', 'collection-for-woo'));
+    }
+
+    /**
+     * Render page dropdown helper
+     */
+    private function render_page_dropdown($option_name, $label) {
+        $selected = get_option($option_name, 0);
+        ?>
+        <select name="<?php echo esc_attr($option_name); ?>" style="max-width: 300px;">
+            <option value="0"><?php esc_html_e('-- Select a Page --', 'collection-for-woo'); ?></option>
+            <?php
+            $pages = get_pages();
+            foreach ($pages as $page) {
+                echo '<option value="' . esc_attr($page->ID) . '"' . selected($selected, $page->ID) . '>' . esc_html($page->post_title) . '</option>';
+            }
+            ?>
+        </select>
+        <?php
+    }
+
+    /**
+     * Render superstone page field
+     */
+    public function render_superstone_page_field() {
+        $this->render_page_dropdown('mcd_superstone_page', __('Superstone Quartz Collection', 'collection-for-woo'));
+    }
+
+    /**
+     * Render goodstone page field
+     */
+    public function render_goodstone_page_field() {
+        $this->render_page_dropdown('mcd_goodstone_page', __('Goodstone Quartz Collection', 'collection-for-woo'));
+    }
+
+    /**
+     * Render kstone page field
+     */
+    public function render_kstone_page_field() {
+        $this->render_page_dropdown('mcd_kstone_page', __('Kstone Quartz Collection', 'collection-for-woo'));
+    }
+
+    /**
+     * Render lucent page field
+     */
+    public function render_lucent_page_field() {
+        $this->render_page_dropdown('mcd_lucent_page', __('Lucent Quartz Collection', 'collection-for-woo'));
+    }
+
+    /**
+     * Render fortezza page field
+     */
+    public function render_fortezza_page_field() {
+        $this->render_page_dropdown('mcd_fortezza_page', __('Fortezza Quartz (Custom) Collection', 'collection-for-woo'));
+    }
+
+    /**
+     * Render natural stone page field
+     */
+    public function render_natural_stone_page_field() {
+        $this->render_page_dropdown('mcd_natural_stone_page', __('Natural Stone Collection', 'collection-for-woo'));
+    }
+
+    /**
+     * Render all collections page field
+     */
+    public function render_all_collections_page_field() {
+        $this->render_page_dropdown('mcd_all_collections_page', __('All Collections Master Page', 'collection-for-woo'));
+    }
+
+    /**
+     * Sanitize CSS
+     */
+    public function sanitize_css($value) {
+        // Allow basic CSS but strip dangerous content
+        return wp_kses_post($value);
+    }
+
+    /**
+     * Sanitize integer
+     */
+    public function sanitize_int($value) {
+        return absint($value);
+    }
+    
+    /**
+     * Handle page creation
+     */
+    public function handle_create_pages() {
+        // Verify nonce
+        if (!isset($_POST['mcd_create_pages_nonce']) || !wp_verify_nonce($_POST['mcd_create_pages_nonce'], 'mcd_create_pages')) {
+            wp_die(__('Security check failed', 'collection-for-woo'));
+        }
+        
+        // Check user permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action', 'collection-for-woo'));
+        }
+        
+        // Load auto page creator
+        require_once MCD_PLUGIN_DIR . 'includes/auto-page-creator.php';
+        
+        // Create all pages (they are saved to database automatically)
+        $pages = MCD_Auto_Page_Creator::create_all_pages();
+        
+        // Auto-link pages to settings
+        MCD_Auto_Page_Creator::auto_link_pages($pages);
+        
+        // Count results
+        $created_count = 0;
+        $existing_count = 0;
+        $failed_count = 0;
+        
+        foreach ($pages as $page) {
+            if (isset($page['status'])) {
+                if ($page['status'] === 'created') {
+                    $created_count++;
+                } elseif ($page['status'] === 'exists') {
+                    $existing_count++;
+                } elseif ($page['status'] === 'failed') {
+                    $failed_count++;
+                }
+            }
+        }
+        
+        // Redirect back with success message and statistics
+        $redirect_url = add_query_arg(
+            array(
+                'page' => 'marble-collection-settings',
+                'pages_created' => 'yes',
+                'created' => $created_count,
+                'existing' => $existing_count,
+                'failed' => $failed_count
+            ),
+            admin_url('admin.php')
+        );
+        
+        wp_redirect($redirect_url);
+        exit;
     }
 }
 
 // Initialize admin settings
 if (is_admin()) {
-    new MCD_Admin_Settings();
+    $settings = new MCD_Admin_Settings();
+    add_action('admin_init', array($settings, 'add_advanced_settings'));
 }

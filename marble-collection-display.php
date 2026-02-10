@@ -3,7 +3,7 @@
  * Plugin Name: Marble Collection Display
  * Plugin URI: https://github.com/imranniaz-st/wo-com-all-comllection
  * Description: Professional WooCommerce product collection display plugin for marble and stone products with filtering and grid layout
- * Version: 2.0.1
+ * Version: 2.0.2
  * Author: Bicodev Ltd 
  * Author URI: https://Bicodev.com
  * Text Domain: collection-for-woo
@@ -62,10 +62,13 @@ class Marble_Collection_Display {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_shortcode('marble_collection', array($this, 'render_collection'));
         add_action('init', array($this, 'register_assets'));
+        add_filter('woocommerce_get_price_html', array($this, 'disable_price_html'), 10, 2);
         
         // AJAX handlers
         add_action('wp_ajax_mcd_filter_products', array($this, 'ajax_filter_products'));
         add_action('wp_ajax_nopriv_mcd_filter_products', array($this, 'ajax_filter_products'));
+        add_action('wp_ajax_mcd_quick_view', array($this, 'ajax_quick_view'));
+        add_action('wp_ajax_nopriv_mcd_quick_view', array($this, 'ajax_quick_view'));
         
         // Load admin settings
         if (is_admin()) {
@@ -76,17 +79,25 @@ class Marble_Collection_Display {
             new MCD_GitHub_Updater(__FILE__);
         }
         
-        // Load Elementor support (gracefully if not present)
-        add_action('elementor/loaded', array($this, 'load_elementor_support'));
+        // Load frontend display features
+        require_once MCD_PLUGIN_DIR . 'includes/frontend-display.php';
+        
+        // Load Elementor integration
+        require_once MCD_PLUGIN_DIR . 'includes/elementor-integration.php';
+        
+        // Load auto page creator (admin only)
+        if (is_admin()) {
+            require_once MCD_PLUGIN_DIR . 'includes/auto-page-creator.php';
+        }
     }
     
     /**
-     * Load Elementor support when Elementor is ready
+     * Disable price display for all products (shop + single)
      */
-    public function load_elementor_support() {
-        require_once MCD_PLUGIN_DIR . 'includes/elementor-support.php';
+    public function disable_price_html($price, $product) {
+        return '';
     }
-    
+
     /**
      * Check if WooCommerce is active
      */
@@ -113,6 +124,14 @@ class Marble_Collection_Display {
      * Register assets
      */
     public function register_assets() {
+        // Register Font Awesome
+        wp_register_style(
+            'font-awesome',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+            array(),
+            '6.4.0'
+        );
+        
         // Register styles
         wp_register_style(
             'marble-collection-style',
@@ -145,8 +164,28 @@ class Marble_Collection_Display {
             $should_enqueue = true;
         }
         
+        // Always enqueue if any GTA Marble features shortcodes are present
+        $gta_shortcodes = array(
+            'mcd_hero_section',
+            'mcd_kitchen_priority',
+            'mcd_contact_info',
+            'mcd_business_info',
+            'mcd_sticky_collection_bar',
+            'mcd_locations',
+            'mcd_cta_buttons'
+        );
+        
+        foreach ($gta_shortcodes as $shortcode) {
+            if (has_shortcode(get_post()->post_content ?? '', $shortcode)) {
+                $should_enqueue = true;
+                break;
+            }
+        }
+        
         if ($should_enqueue) {
+            wp_enqueue_style('font-awesome');
             wp_enqueue_style('marble-collection-style');
+            wp_enqueue_style('mcd-frontend-features', MCD_PLUGIN_URL . 'assets/css/frontend-features.css', array(), MCD_VERSION);
             wp_enqueue_script('marble-collection-script');
             
             // Get responsive column settings
@@ -177,6 +216,7 @@ class Marble_Collection_Display {
             $custom_css .= $this->get_custom_font_css();
             
             wp_add_inline_style('marble-collection-style', $custom_css);
+            wp_add_inline_style('mcd-frontend-features', $custom_css);
             
             wp_localize_script('marble-collection-script', 'mcdAjax', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
@@ -378,6 +418,52 @@ class Marble_Collection_Display {
             'html' => $html,
             'found_posts' => $query->found_posts,
             'max_pages' => $query->max_num_pages,
+        ));
+    }
+    
+    /**
+     * AJAX handler for quick view
+     */
+    public function ajax_quick_view() {
+        // Verify nonce
+        if (!check_ajax_referer('mcd_filter_nonce', 'nonce', false)) {
+            wp_send_json_error(array('message' => 'Security check failed'));
+            return;
+        }
+        
+        $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+        
+        if (!$product_id) {
+            wp_send_json_error(array('message' => 'Invalid product ID'));
+            return;
+        }
+        
+        $product = wc_get_product($product_id);
+        
+        if (!$product) {
+            wp_send_json_error(array('message' => 'Product not found'));
+            return;
+        }
+        
+        $sku = $product->get_sku();
+        if (empty($sku)) {
+            $sku = 'SKU-' . $product->get_id();
+        }
+        
+        $description = $product->get_description();
+        if (empty($description)) {
+            $description = $product->get_short_description();
+        }
+        if (empty($description)) {
+            $description = __('No description available.', 'collection-for-woo');
+        }
+        
+        wp_send_json_success(array(
+            'title' => $product->get_name(),
+            'sku' => $sku,
+            'description' => wp_kses_post($description),
+            'image' => $product->get_image('medium'),
+            'permalink' => get_permalink($product->get_id()),
         ));
     }
 }
