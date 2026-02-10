@@ -236,6 +236,8 @@
 }
 .mcd-product-code {
     display: none !important;
+    padding: 0 10px 10px;
+    font-size: 8px;
 }
 
 .mcd-products-grid.columns-2 {
