@@ -63,7 +63,7 @@
     right: 5px;
     top: 50%;
     transform: translateY(-50%); */
-    background: #2ea3f2;
+    background: #f22e62;
     color: #fff;
     border: none;
     padding: 8px 15px;
@@ -139,6 +139,61 @@
     font-size: 12px;
 }
 
+/* Color Filter Swatches */
+.mcd-color-filter label {
+    gap: 8px;
+}
+
+.mcd-color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #f2f2f2;
+    flex: 0 0 16px;
+}
+
+.mcd-color-swatch--white,
+.mcd-color-swatch--ivory,
+.mcd-color-swatch--cream {
+    background: #f9f6ef;
+    border-color: #ccc;
+}
+
+.mcd-color-swatch--black {
+    background: #111;
+    border-color: #111;
+}
+
+.mcd-color-swatch--grey,
+.mcd-color-swatch--gray {
+    background: #9b9b9b;
+}
+
+.mcd-color-swatch--beige {
+    background: #d8c7a0;
+}
+
+.mcd-color-swatch--brown {
+    background: #8b6d4d;
+}
+
+.mcd-color-swatch--blue {
+    background: #3c6fa6;
+}
+
+.mcd-color-swatch--green {
+    background: #4f8a5b;
+}
+
+.mcd-color-swatch--red {
+    background: #a94442;
+}
+
+.mcd-color-swatch--gold {
+    background: #d4af37;
+}
+
 /* Top Bar */
 .mcd-top-bar {
     display: flex;
@@ -178,6 +233,9 @@
     list-style: none;
     margin: 0;
     padding: 0;
+}
+.mcd-product-code {
+    display: none !important;
 }
 
 .mcd-products-grid.columns-2 {
@@ -247,6 +305,20 @@
     justify-content: center;
 }
 
+.mcd-watermark {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #d32f2f;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 2px;
+    z-index: 5;
+    letter-spacing: 0.5px;
+}
+
 .mcd-product-item:hover .mcd-overlay {
     background: rgba(46, 163, 242, 0.1);
 }
@@ -261,6 +333,17 @@
     transition: all 0.3s;
     opacity: 0;
     transform: scale(0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.mcd-quick-view-btn i {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .mcd-product-item:hover .mcd-quick-view-btn {
@@ -283,14 +366,33 @@
 }
 
 .mcd-product-excerpt {
-    padding: 0 15px 15px;
-    margin: 0;
-    font-size: 13px;
-    color: #666;
-    line-height: 1.6;
+    display: none !important;
+}
+
+/* Product Footer and View Button */
+.mcd-product-footer {
+    padding: 0 10px 10px;
+}
+
+.mcd-btn-view-product {
+    display: block;
+    width: 100%;
+    padding: 10px 15px !important;
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
     text-align: center;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    border-radius: 3px;
+    font-size: 13px !important;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent !important;
+}
+
+.mcd-btn-view-product:hover {
+    background-color: #333333 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Color Swatches */
@@ -446,6 +548,7 @@
     
     /* Tablet uses dynamic columns from settings */
     .mcd-products-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
         gap: 20px;
     }
     
@@ -499,6 +602,7 @@
     
     /* Mobile uses dynamic columns from settings */
     .mcd-products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 15px;
     }
     
@@ -507,26 +611,24 @@
     }
     
     .mcd-product-title {
-        font-size: 15px;
+        font-size: 11px;
         padding: 12px 10px;
         margin: 0;
-        text-align: left;
+        /* text-align: left; */
         line-height: 1.4;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
+        /* word-wrap: break-word; */
+        /* overflow-wrap: break-word; */
         font-weight: var(--mcd-title-weight);
-        color: var(--mcd-title-color);
+        /* color: var(--mcd-title-color); */
     }
     
     .mcd-product-excerpt {
-        font-size: 10px;
-        padding: 0 10px 12px;
-        margin: 0;
-        text-align: left;
-        line-height: 1.5;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        hyphens: auto;
+        display: none !important;
+    }
+    
+    .mcd-btn-view-product {
+        font-size: 11px !important;
+        padding: 8px 12px !important;
     }
     
     .mcd-color-swatches {

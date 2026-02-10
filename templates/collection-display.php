@@ -97,9 +97,19 @@ $colors = get_terms(array(
                     <h4 class="mcd-filter-title"><?php esc_html_e('Product Color', 'collection-for-woo'); ?></h4>
                     <ul class="mcd-filter-list mcd-color-filter">
                         <?php foreach ($colors as $color): ?>
+                        <?php
+                            $color_slug = sanitize_title($color->slug);
+                            $color_hex = get_term_meta($color->term_id, 'color', true);
+                            if (empty($color_hex)) {
+                                $color_hex = get_term_meta($color->term_id, 'color_hex', true);
+                            }
+                            $color_hex = sanitize_hex_color($color_hex);
+                            $swatch_style = $color_hex ? ' style="background-color: ' . esc_attr($color_hex) . ';"' : '';
+                        ?>
                         <li>
                             <label>
                                 <input type="checkbox" name="mcd_color" value="<?php echo esc_attr($color->slug); ?>">
+                                <span class="mcd-color-swatch mcd-color-swatch--<?php echo esc_attr($color_slug); ?>"<?php echo $swatch_style; ?>></span>
                                 <span><?php echo esc_html($color->name); ?></span>
                                 <span class="mcd-count">(<?php echo esc_html($color->count); ?>)</span>
                             </label>

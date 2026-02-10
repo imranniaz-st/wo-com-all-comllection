@@ -14,13 +14,18 @@ get_header();
 
 // Get settings
 $columns = get_option('mcd_columns', 3);
-$columns_tablet = get_option('mcd_columns_tablet', 2);
+$columns_tablet = get_option('mcd_columns_tablet', 3);
 $columns_mobile = get_option('mcd_columns_mobile', 2);
 $per_page = get_option('mcd_per_page', 24);
 $orderby = get_option('mcd_default_orderby', 'menu_order');
 $show_filters = get_option('mcd_show_filters', 'true');
 $show_search = get_option('mcd_show_search', 'true');
 $show_sorting = get_option('mcd_show_sorting', 'true');
+
+// Force responsive columns: Desktop 3, Tablet 3, Mobile 2
+$columns = 3;
+$columns_tablet = 3;
+$columns_mobile = 2;
 
 // Add inline CSS for responsive columns
 $custom_css = "

@@ -139,7 +139,7 @@ class MCD_Frontend_Display {
         <div class="mcd-collection-showcase" data-columns="<?php echo esc_attr($atts['columns']); ?>">
             <?php
             // Display products from collection
-            echo do_shortcode('[marble_collection_display category="' . esc_attr($atts['collection']) . '" limit="' . intval($atts['limit']) . '"]');
+            echo do_shortcode('[marble_collection category="' . esc_attr($atts['collection']) . '" per_page="' . intval($atts['limit']) . '"]');
             ?>
         </div>
         <?php
@@ -354,9 +354,9 @@ class MCD_Frontend_Display {
                     <div class="mcd-quick-view-image"></div>
                     <div class="mcd-quick-view-details">
                         <h3 class="mcd-quick-view-title"></h3>
-                        <p class="mcd-quick-view-price"></p>
+                        <p class="mcd-quick-view-code"><strong><?php esc_html_e('Product Code:', 'collection-for-woo'); ?></strong> <span></span></p>
                         <div class="mcd-quick-view-description"></div>
-                        <a href="#" class="mcd-btn mcd-btn-primary"><?php esc_html_e('View Full Details', 'collection-for-woo'); ?></a>
+                        <a href="#" class="mcd-btn mcd-btn-primary mcd-more-details-btn"><?php esc_html_e('More Details', 'collection-for-woo'); ?></a>
                     </div>
                 </div>
             </div>

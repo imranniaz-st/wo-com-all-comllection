@@ -19,6 +19,7 @@ class MCD_Admin_Settings {
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_filter('page_template', array($this, 'load_collection_template'));
+        add_action('admin_post_mcd_create_pages', array($this, 'handle_create_pages'));
     }
     
     /**
@@ -1064,6 +1065,14 @@ class MCD_Admin_Settings {
      * Add GTA Marble specific settings sections
      */
     private function add_gta_marble_sections() {
+        // Auto Page Creator Section
+        add_settings_section(
+            'mcd_auto_pages',
+            __('🚀 Quick Setup - Auto Create Pages', 'collection-for-woo'),
+            array($this, 'render_auto_pages_section'),
+            'mcd_settings'
+        );
+        
         // Business Information Section
         add_settings_section(
             'mcd_business_info',
@@ -1207,6 +1216,57 @@ class MCD_Admin_Settings {
             'mcd_settings',
             'mcd_collections'
         );
+    }
+
+    /**
+     * Render auto pages section
+     */
+    public function render_auto_pages_section() {
+        echo '<p><strong>' . esc_html__('Automatically create all necessary pages with content and shortcodes!', 'collection-for-woo') . '</strong></p>';
+        echo '<p>' . esc_html__('This will create 11 pages: Home, Kitchen Countertops, Collection pages (Superstone, Goodstone, Kstone, Lucent, Fortezza, Natural Stone), All Collections, About, and Contact. Each page includes the appropriate shortcodes and displays them for reference.', 'collection-for-woo') . '</p>';
+        
+        // Check if pages were just created and show detailed results
+        if (isset($_GET['pages_created']) && $_GET['pages_created'] == 'yes') {
+            $created_count = isset($_GET['created']) ? intval($_GET['created']) : 0;
+            $existing_count = isset($_GET['existing']) ? intval($_GET['existing']) : 0;
+            $failed_count = isset($_GET['failed']) ? intval($_GET['failed']) : 0;
+            
+            echo '<div class="notice notice-success" style="border-left-color:#46b450; padding:15px;">';
+            echo '<h3 style="margin-top:0;">✅ ' . esc_html__('Pages Created & Saved Successfully!', 'collection-for-woo') . '</h3>';
+            
+            if ($created_count > 0) {
+                echo '<p><strong>' . sprintf(esc_html__('✓ Created: %d new pages saved to database', 'collection-for-woo'), $created_count) . '</strong></p>';
+            }
+            
+            if ($existing_count > 0) {
+                echo '<p><strong>' . sprintf(esc_html__('ℹ Existing: %d pages already existed (not overwritten)', 'collection-for-woo'), $existing_count) . '</strong></p>';
+            }
+            
+            if ($failed_count > 0) {
+                echo '<p style="color:#dc3232;"><strong>' . sprintf(esc_html__('✗ Failed: %d pages could not be created', 'collection-for-woo'), $failed_count) . '</strong></p>';
+            }
+            
+            echo '<p><a href="' . esc_url(admin_url('edit.php?post_type=page')) . '" class="button button-primary">' . esc_html__('View All Pages', 'collection-for-woo') . '</a></p>';
+            echo '</div>';
+        }
+        
+        ?>
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <input type="hidden" name="action" value="mcd_create_pages">
+            <?php wp_nonce_field('mcd_create_pages', 'mcd_create_pages_nonce'); ?>
+            <p>
+                <button type="submit" class="button button-primary button-hero" style="background:#d4af37; border-color:#c49f2e; text-shadow:none; font-size:16px; height:auto; padding:15px 30px;">
+                    🚀 <?php esc_html_e('Create All Pages Automatically', 'collection-for-woo'); ?>
+                </button>
+            </p>
+            <p class="description">
+                <?php esc_html_e('⚠️ Note: All pages are saved permanently to the database. If pages already exist with the same slugs, they will not be overwritten.', 'collection-for-woo'); ?>
+            </p>
+            <p class="description">
+                <?php esc_html_e('💾 All created pages are saved with: Content, Shortcodes, SEO metadata, and can be viewed in Pages → All Pages', 'collection-for-woo'); ?>
+            </p>
+        </form>
+        <?php
     }
 
     /**
@@ -1401,6 +1461,62 @@ class MCD_Admin_Settings {
      */
     public function sanitize_int($value) {
         return absint($value);
+    }
+    
+    /**
+     * Handle page creation
+     */
+    public function handle_create_pages() {
+        // Verify nonce
+        if (!isset($_POST['mcd_create_pages_nonce']) || !wp_verify_nonce($_POST['mcd_create_pages_nonce'], 'mcd_create_pages')) {
+            wp_die(__('Security check failed', 'collection-for-woo'));
+        }
+        
+        // Check user permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action', 'collection-for-woo'));
+        }
+        
+        // Load auto page creator
+        require_once MCD_PLUGIN_DIR . 'includes/auto-page-creator.php';
+        
+        // Create all pages (they are saved to database automatically)
+        $pages = MCD_Auto_Page_Creator::create_all_pages();
+        
+        // Auto-link pages to settings
+        MCD_Auto_Page_Creator::auto_link_pages($pages);
+        
+        // Count results
+        $created_count = 0;
+        $existing_count = 0;
+        $failed_count = 0;
+        
+        foreach ($pages as $page) {
+            if (isset($page['status'])) {
+                if ($page['status'] === 'created') {
+                    $created_count++;
+                } elseif ($page['status'] === 'exists') {
+                    $existing_count++;
+                } elseif ($page['status'] === 'failed') {
+                    $failed_count++;
+                }
+            }
+        }
+        
+        // Redirect back with success message and statistics
+        $redirect_url = add_query_arg(
+            array(
+                'page' => 'marble-collection-settings',
+                'pages_created' => 'yes',
+                'created' => $created_count,
+                'existing' => $existing_count,
+                'failed' => $failed_count
+            ),
+            admin_url('admin.php')
+        );
+        
+        wp_redirect($redirect_url);
+        exit;
     }
 }
 

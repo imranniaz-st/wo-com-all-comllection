@@ -29,10 +29,12 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
             $image_size = apply_filters('marble_collection_product_image_size', 'medium');
             echo wp_kses_post($product->get_image($image_size));
             ?>
+            <span class="mcd-watermark">GTA Marble</span>
             <span class="mcd-overlay"></span>
             
             <?php if ($show_quick_view): ?>
             <span class="mcd-quick-view-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                <i class="fas fa-eye"></i>
                 <?php esc_html_e('Quick View', 'collection-for-woo'); ?>
             </span>
             <?php endif; ?>
@@ -42,12 +44,6 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
         <h2 class="mcd-product-title">
             <?php echo esc_html($product->get_name()); ?>
         </h2>
-        <?php endif; ?>
-        
-        <?php if ($show_description && $product->get_short_description()): ?>
-        <div class="mcd-product-excerpt">
-            <?php echo wp_kses_post(wp_trim_words($product->get_short_description(), 15)); ?>
-        </div>
         <?php endif; ?>
         
         <?php
@@ -98,4 +94,10 @@ $show_quick_view = isset($GLOBALS['mcd_show_quick_view']) ? $GLOBALS['mcd_show_q
         ?>
         
     </a>
+    
+    <div class="mcd-product-footer">
+        <a href="<?php echo esc_url(get_permalink($product->get_id())); ?>" class="mcd-btn mcd-btn-view-product">
+            <?php esc_html_e('View', 'collection-for-woo'); ?>
+        </a>
+    </div>
 </li>

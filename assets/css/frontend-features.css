@@ -471,11 +471,11 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-.mcd-quick-view-price {
-    font-size: 20px;
-    color: #d4af37;
+.mcd-quick-view-code {
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 15px;
+    color: #1a1a1a;
+    margin: 10px 0;
 }
 
 @media (max-width: 768px) {
