@@ -20,6 +20,15 @@ class MCD_Admin_Settings {
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_filter('page_template', array($this, 'load_collection_template'));
         add_action('admin_post_mcd_create_pages', array($this, 'handle_create_pages'));
+        add_action('admin_post_mcd_create_single_page', array($this, 'handle_create_single_page'));
+        add_filter('pre_update_option_mcd_collection_page', array($this, 'maybe_auto_create_page'), 10, 2);
+        add_filter('pre_update_option_mcd_collection_page_old', array($this, 'maybe_auto_create_page'), 10, 2);
+        add_filter('pre_update_option_mcd_quartz_page', array($this, 'maybe_auto_create_page'), 10, 2);
+        add_filter('pre_update_option_mcd_marble_page', array($this, 'maybe_auto_create_page'), 10, 2);
+        add_filter('pre_update_option_mcd_granite_page', array($this, 'maybe_auto_create_page'), 10, 2);
+        add_filter('pre_update_option_mcd_european_page', array($this, 'maybe_auto_create_page'), 10, 2);
+        add_filter('pre_update_option_mcd_onyx_page', array($this, 'maybe_auto_create_page'), 10, 2);
+        add_filter('pre_update_option_mcd_sink_page', array($this, 'maybe_auto_create_page'), 10, 2);
     }
     
     /**
@@ -58,6 +67,8 @@ class MCD_Admin_Settings {
         $sanitize_orderby = array($this, 'sanitize_orderby');
 
         register_setting('mcd_settings', 'mcd_collection_page', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_collection_page_old', array('sanitize_callback' => $sanitize_int));
+        register_setting('mcd_settings', 'mcd_auto_create_missing_pages', array('sanitize_callback' => $sanitize_true_false));
         register_setting('mcd_settings', 'mcd_columns', array('sanitize_callback' => $sanitize_int));
         register_setting('mcd_settings', 'mcd_columns_tablet', array('sanitize_callback' => $sanitize_int));
         register_setting('mcd_settings', 'mcd_columns_mobile', array('sanitize_callback' => $sanitize_int));
@@ -103,7 +114,13 @@ class MCD_Admin_Settings {
             __('All Collections Page', 'collection-for-woo'),
             array($this, 'render_page_field'),
             'mcd_settings',
-            'mcd_general_section'
+            'mcd_general_section',
+            array(
+                'option_name' => 'mcd_collection_page',
+                'default_title' => 'All Collections Gallery',
+                'default_slug' => 'collection-gallery',
+                'create_label' => __('Create All Collections Page', 'collection-for-woo')
+            )
         );
         
         // Gallery Pages Section
@@ -121,7 +138,7 @@ class MCD_Admin_Settings {
             'mcd_settings',
             'mcd_gallery_section'
         );
-        
+
         add_settings_field(
             'mcd_marble_page',
             __('Marble Gallery Page', 'collection-for-woo'),
@@ -129,7 +146,7 @@ class MCD_Admin_Settings {
             'mcd_settings',
             'mcd_gallery_section'
         );
-        
+
         add_settings_field(
             'mcd_granite_page',
             __('Granite Gallery Page', 'collection-for-woo'),
@@ -137,7 +154,7 @@ class MCD_Admin_Settings {
             'mcd_settings',
             'mcd_gallery_section'
         );
-        
+
         add_settings_field(
             'mcd_european_page',
             __('European Gallery Page', 'collection-for-woo'),
@@ -164,8 +181,22 @@ class MCD_Admin_Settings {
         
         add_settings_field(
             'mcd_collection_page_old',
-            __('Main Collection Page (Legacy)', 'collection-for-woo'),
+            __('Main Collection Page', 'collection-for-woo'),
             array($this, 'render_page_field'),
+            'mcd_settings',
+            'mcd_general_section',
+            array(
+                'option_name' => 'mcd_collection_page_old',
+                'default_title' => 'All Collections Gallery',
+                'default_slug' => 'collection-gallery',
+                'create_label' => __('Create Legacy Collection Page', 'collection-for-woo')
+            )
+        );
+
+        add_settings_field(
+            'mcd_auto_create_missing_pages',
+            __('Auto-Create Missing Pages', 'collection-for-woo'),
+            array($this, 'render_auto_create_missing_pages_field'),
             'mcd_settings',
             'mcd_general_section'
         );
@@ -440,10 +471,15 @@ class MCD_Admin_Settings {
      * Render page field
      */
     public function render_page_field() {
-        $page_id = get_option('mcd_collection_page');
+        $args = func_num_args() > 0 ? func_get_arg(0) : array();
+        $option_name = isset($args['option_name']) ? $args['option_name'] : 'mcd_collection_page';
+        $default_title = isset($args['default_title']) ? $args['default_title'] : 'All Collections Gallery';
+        $default_slug = isset($args['default_slug']) ? $args['default_slug'] : 'collection-gallery';
+        $create_label = isset($args['create_label']) ? $args['create_label'] : __('Create Page', 'collection-for-woo');
+        $page_id = get_option($option_name);
         $pages = get_pages();
         ?>
-        <select name="mcd_collection_page" id="mcd_collection_page">
+        <select name="<?php echo esc_attr($option_name); ?>" id="<?php echo esc_attr($option_name); ?>">
             <option value=""><?php esc_html_e('-- Select Page --', 'collection-for-woo'); ?></option>
             <?php foreach ($pages as $page): ?>
                 <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($page_id, $page->ID); ?>>
@@ -451,8 +487,54 @@ class MCD_Admin_Settings {
                 </option>
             <?php endforeach; ?>
         </select>
+        <p style="margin-top: 8px;">
+            <?php
+            $create_url = add_query_arg(
+                array(
+                    'action' => 'mcd_create_single_page',
+                    'option' => $option_name
+                ),
+                admin_url('admin-post.php')
+            );
+            $create_url = wp_nonce_url($create_url, 'mcd_create_single_page_' . $option_name, 'mcd_create_single_page_nonce');
+            ?>
+            <a class="button button-secondary" href="<?php echo esc_url($create_url); ?>">
+                <?php echo esc_html($create_label); ?>
+            </a>
+            <span class="description" style="margin-left: 8px;">
+                <?php echo esc_html(sprintf(__('Default: %s', 'collection-for-woo'), $default_title)); ?>
+            </span>
+        </p>
+        <?php
+        if (isset($_GET['mcd_page_option'], $_GET['mcd_page_action']) && $_GET['mcd_page_option'] === $option_name) {
+            $action = sanitize_text_field(wp_unslash($_GET['mcd_page_action']));
+            if ($action === 'created') {
+                echo '<p class="description" style="color:#46b450;">' . esc_html__('Page created and selected.', 'collection-for-woo') . '</p>';
+            } elseif ($action === 'exists') {
+                echo '<p class="description" style="color:#0073aa;">' . esc_html__('Page already exists and was selected.', 'collection-for-woo') . '</p>';
+            } elseif ($action === 'failed') {
+                echo '<p class="description" style="color:#dc3232;">' . esc_html__('Page could not be created.', 'collection-for-woo') . '</p>';
+            }
+        }
+        ?>
         <p class="description">
             <?php esc_html_e('Select the page where you want to display all collections. The plugin will automatically add the collection display to this page.', 'collection-for-woo'); ?>
+        </p>
+        <?php
+    }
+
+    /**
+     * Render auto-create missing pages field
+     */
+    public function render_auto_create_missing_pages_field() {
+        $enabled = get_option('mcd_auto_create_missing_pages', 'false');
+        ?>
+        <label>
+            <input type="checkbox" name="mcd_auto_create_missing_pages" value="true" <?php checked($enabled, 'true'); ?> />
+            <?php esc_html_e('If selected page is missing, create it automatically when saving settings.', 'collection-for-woo'); ?>
+        </label>
+        <p class="description">
+            <?php esc_html_e('Applies to General and Gallery page settings in this screen.', 'collection-for-woo'); ?>
         </p>
         <?php
     }
@@ -506,114 +588,84 @@ class MCD_Admin_Settings {
     /**     * Render Quartz gallery page field
      */
     public function render_quartz_page_field() {
-        $selected_page = get_option('mcd_quartz_page');
-        $pages = get_pages();
-        ?>
-        <select name="mcd_quartz_page">
-            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
-            <?php foreach ($pages as $page) : ?>
-                <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
-                    <?php echo esc_html($page->post_title); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <p class="description"><?php esc_html_e('Select page for Quartz gallery (shows only Quartz category products)', 'collection-for-woo'); ?></p>
-        <?php
+        $this->render_page_dropdown(
+            'mcd_quartz_page',
+            __('Quartz Gallery', 'collection-for-woo'),
+            array(
+                'create_label' => __('Create Quartz Gallery Page', 'collection-for-woo'),
+                'description' => __('Select page for Quartz gallery (shows only Quartz category products)', 'collection-for-woo')
+            )
+        );
     }
     
     /**
      * Render Marble gallery page field
      */
     public function render_marble_page_field() {
-        $selected_page = get_option('mcd_marble_page');
-        $pages = get_pages();
-        ?>
-        <select name="mcd_marble_page">
-            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
-            <?php foreach ($pages as $page) : ?>
-                <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
-                    <?php echo esc_html($page->post_title); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <p class="description"><?php esc_html_e('Select page for Marble gallery (shows only Marble category products)', 'collection-for-woo'); ?></p>
-        <?php
+        $this->render_page_dropdown(
+            'mcd_marble_page',
+            __('Marble Gallery', 'collection-for-woo'),
+            array(
+                'create_label' => __('Create Marble Gallery Page', 'collection-for-woo'),
+                'description' => __('Select page for Marble gallery (shows only Marble category products)', 'collection-for-woo')
+            )
+        );
     }
     
     /**
      * Render Granite gallery page field
      */
     public function render_granite_page_field() {
-        $selected_page = get_option('mcd_granite_page');
-        $pages = get_pages();
-        ?>
-        <select name="mcd_granite_page">
-            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
-            <?php foreach ($pages as $page) : ?>
-                <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
-                    <?php echo esc_html($page->post_title); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <p class="description"><?php esc_html_e('Select page for Granite gallery (shows only Granite category products)', 'collection-for-woo'); ?></p>
-        <?php
+        $this->render_page_dropdown(
+            'mcd_granite_page',
+            __('Granite Gallery', 'collection-for-woo'),
+            array(
+                'create_label' => __('Create Granite Gallery Page', 'collection-for-woo'),
+                'description' => __('Select page for Granite gallery (shows only Granite category products)', 'collection-for-woo')
+            )
+        );
     }
     
     /**
      * Render European gallery page field
      */
     public function render_european_page_field() {
-        $selected_page = get_option('mcd_european_page');
-        $pages = get_pages();
-        ?>
-        <select name="mcd_european_page">
-            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
-            <?php foreach ($pages as $page) : ?>
-                <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
-                    <?php echo esc_html($page->post_title); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <p class="description"><?php esc_html_e('Select page for European gallery (shows only European category products)', 'collection-for-woo'); ?></p>
-        <?php
+        $this->render_page_dropdown(
+            'mcd_european_page',
+            __('European Gallery', 'collection-for-woo'),
+            array(
+                'create_label' => __('Create European Gallery Page', 'collection-for-woo'),
+                'description' => __('Select page for European gallery (shows only European category products)', 'collection-for-woo')
+            )
+        );
     }
     
     /**
      * Render Onyx gallery page field
      */
     public function render_onyx_page_field() {
-        $selected_page = get_option('mcd_onyx_page');
-        $pages = get_pages();
-        ?>
-        <select name="mcd_onyx_page">
-            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
-            <?php foreach ($pages as $page) : ?>
-                <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
-                    <?php echo esc_html($page->post_title); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <p class="description"><?php esc_html_e('Select page for Onyx gallery (shows only Onyx category products)', 'collection-for-woo'); ?></p>
-        <?php
+        $this->render_page_dropdown(
+            'mcd_onyx_page',
+            __('Onyx Gallery', 'collection-for-woo'),
+            array(
+                'create_label' => __('Create Onyx Gallery Page', 'collection-for-woo'),
+                'description' => __('Select page for Onyx gallery (shows only Onyx category products)', 'collection-for-woo')
+            )
+        );
     }
     
     /**
      * Render Sink gallery page field
      */
     public function render_sink_page_field() {
-        $selected_page = get_option('mcd_sink_page');
-        $pages = get_pages();
-        ?>
-        <select name="mcd_sink_page">
-            <option value=""><?php esc_html_e('Select a page', 'collection-for-woo'); ?></option>
-            <?php foreach ($pages as $page) : ?>
-                <option value="<?php echo esc_attr($page->ID); ?>" <?php selected($selected_page, $page->ID); ?>>
-                    <?php echo esc_html($page->post_title); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <p class="description"><?php esc_html_e('Select page for Sink gallery (shows only Sink category products)', 'collection-for-woo'); ?></p>
-        <?php
+        $this->render_page_dropdown(
+            'mcd_sink_page',
+            __('Sink Gallery', 'collection-for-woo'),
+            array(
+                'create_label' => __('Create Sink Gallery Page', 'collection-for-woo'),
+                'description' => __('Select page for Sink gallery (shows only Sink category products)', 'collection-for-woo')
+            )
+        );
     }
     
     /**     * Render per page field
@@ -710,6 +762,9 @@ class MCD_Admin_Settings {
      */
     public function load_collection_template($template) {
         $collection_page_id = get_option('mcd_collection_page');
+        if (!$collection_page_id) {
+            $collection_page_id = get_option('mcd_collection_page_old');
+        }
         $quartz_page_id = get_option('mcd_quartz_page');
         $marble_page_id = get_option('mcd_marble_page');
         $granite_page_id = get_option('mcd_granite_page');
@@ -1222,8 +1277,8 @@ class MCD_Admin_Settings {
      * Render auto pages section
      */
     public function render_auto_pages_section() {
-        echo '<p><strong>' . esc_html__('Automatically create all necessary pages with content and shortcodes!', 'collection-for-woo') . '</strong></p>';
-        echo '<p>' . esc_html__('This will create 11 pages: Home, Kitchen Countertops, Collection pages (Superstone, Goodstone, Kstone, Lucent, Fortezza, Natural Stone), All Collections, About, and Contact. Each page includes the appropriate shortcodes and displays them for reference.', 'collection-for-woo') . '</p>';
+        echo '<p><strong>' . esc_html__('Automatically create selected pages with content and shortcodes!', 'collection-for-woo') . '</strong></p>';
+        echo '<p>' . esc_html__('Choose which page groups you want to create. Created pages are auto-linked to the dropdowns below.', 'collection-for-woo') . '</p>';
         
         // Check if pages were just created and show detailed results
         if (isset($_GET['pages_created']) && $_GET['pages_created'] == 'yes') {
@@ -1249,14 +1304,31 @@ class MCD_Admin_Settings {
             echo '<p><a href="' . esc_url(admin_url('edit.php?post_type=page')) . '" class="button button-primary">' . esc_html__('View All Pages', 'collection-for-woo') . '</a></p>';
             echo '</div>';
         }
+
+        if (isset($_GET['pages_created']) && $_GET['pages_created'] === 'no_selection') {
+            echo '<div class="notice notice-error" style="border-left-color:#dc3232; padding:15px;">';
+            echo '<p><strong>' . esc_html__('Please select at least one page group to create.', 'collection-for-woo') . '</strong></p>';
+            echo '</div>';
+        }
         
         ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="mcd_create_pages">
             <?php wp_nonce_field('mcd_create_pages', 'mcd_create_pages_nonce'); ?>
+            <fieldset style="margin: 10px 0 15px;">
+                <legend class="screen-reader-text"><?php esc_html_e('Select page groups to create', 'collection-for-woo'); ?></legend>
+                <label style="display:block; margin-bottom:6px;">
+                    <input type="checkbox" name="mcd_create_groups[]" value="gta_pages" checked>
+                    <?php esc_html_e('GTA Marble pages (Home, Kitchen, Collections, All Collections, About, Contact)', 'collection-for-woo'); ?>
+                </label>
+                <label style="display:block;">
+                    <input type="checkbox" name="mcd_create_groups[]" value="gallery_pages" checked>
+                    <?php esc_html_e('Gallery pages (All, Quartz, Marble, Granite, European, Onyx, Sink)', 'collection-for-woo'); ?>
+                </label>
+            </fieldset>
             <p>
                 <button type="submit" class="button button-primary button-hero" style="background:#d4af37; border-color:#c49f2e; text-shadow:none; font-size:16px; height:auto; padding:15px 30px;">
-                    🚀 <?php esc_html_e('Create All Pages Automatically', 'collection-for-woo'); ?>
+                    🚀 <?php esc_html_e('Create Selected Pages', 'collection-for-woo'); ?>
                 </button>
             </p>
             <p class="description">
@@ -1384,8 +1456,10 @@ class MCD_Admin_Settings {
     /**
      * Render page dropdown helper
      */
-    private function render_page_dropdown($option_name, $label) {
+    private function render_page_dropdown($option_name, $label, $args = array()) {
         $selected = get_option($option_name, 0);
+        $create_label = isset($args['create_label']) ? $args['create_label'] : '';
+        $description = isset($args['description']) ? $args['description'] : '';
         ?>
         <select name="<?php echo esc_attr($option_name); ?>" style="max-width: 300px;">
             <option value="0"><?php esc_html_e('-- Select a Page --', 'collection-for-woo'); ?></option>
@@ -1397,6 +1471,35 @@ class MCD_Admin_Settings {
             ?>
         </select>
         <?php
+        if (!empty($create_label)) {
+            $create_url = add_query_arg(
+                array(
+                    'action' => 'mcd_create_single_page',
+                    'option' => $option_name
+                ),
+                admin_url('admin-post.php')
+            );
+            $create_url = wp_nonce_url($create_url, 'mcd_create_single_page_' . $option_name, 'mcd_create_single_page_nonce');
+            echo '<p style="margin-top: 8px;">';
+            echo '<a class="button button-secondary" href="' . esc_url($create_url) . '">' . esc_html($create_label) . '</a>';
+            echo '</p>';
+
+            if (isset($_GET['mcd_page_option'], $_GET['mcd_page_action']) && $_GET['mcd_page_option'] === $option_name) {
+                $action = sanitize_text_field(wp_unslash($_GET['mcd_page_action']));
+                if ($action === 'created') {
+                    echo '<p class="description" style="color:#46b450;">' . esc_html__('Page created and selected.', 'collection-for-woo') . '</p>';
+                } elseif ($action === 'exists') {
+                    echo '<p class="description" style="color:#0073aa;">' . esc_html__('Page already exists and was selected.', 'collection-for-woo') . '</p>';
+                } elseif ($action === 'failed') {
+                    echo '<p class="description" style="color:#dc3232;">' . esc_html__('Page could not be created.', 'collection-for-woo') . '</p>';
+                }
+            }
+        }
+
+        if (!empty($description)) {
+            echo '<p class="description">' . esc_html($description) . '</p>';
+        }
+         
     }
 
     /**
@@ -1462,6 +1565,187 @@ class MCD_Admin_Settings {
     public function sanitize_int($value) {
         return absint($value);
     }
+
+    /**
+     * Auto-create missing pages on save
+     */
+    public function maybe_auto_create_page($new_value, $old_value) {
+        if (!is_admin() || !current_user_can('manage_options')) {
+            return $new_value;
+        }
+
+        $filter = current_filter();
+        $option_map = array(
+            'pre_update_option_mcd_collection_page' => 'mcd_collection_page',
+            'pre_update_option_mcd_collection_page_old' => 'mcd_collection_page_old',
+            'pre_update_option_mcd_quartz_page' => 'mcd_quartz_page',
+            'pre_update_option_mcd_marble_page' => 'mcd_marble_page',
+            'pre_update_option_mcd_granite_page' => 'mcd_granite_page',
+            'pre_update_option_mcd_european_page' => 'mcd_european_page',
+            'pre_update_option_mcd_onyx_page' => 'mcd_onyx_page',
+            'pre_update_option_mcd_sink_page' => 'mcd_sink_page'
+        );
+
+        if (!isset($option_map[$filter])) {
+            return $new_value;
+        }
+
+        $option_name = $option_map[$filter];
+
+        $auto_create = false;
+        if (isset($_POST['mcd_auto_create_missing_pages'])) {
+            $auto_create = sanitize_text_field(wp_unslash($_POST['mcd_auto_create_missing_pages'])) === 'true';
+        } else {
+            $auto_create = get_option('mcd_auto_create_missing_pages', 'false') === 'true';
+        }
+
+        if (!$auto_create) {
+            return $new_value;
+        }
+
+        $page_id = absint($new_value);
+        if ($page_id > 0 && get_post_status($page_id)) {
+            return $page_id;
+        }
+
+        $result = $this->create_or_select_page($option_name);
+        if (!empty($result['id'])) {
+            return $result['id'];
+        }
+
+        return $new_value;
+    }
+
+    /**
+     * Handle single page creation from General Settings
+     */
+    public function handle_create_single_page() {
+        if (!isset($_GET['mcd_create_single_page_nonce'], $_GET['option'])) {
+            wp_die(__('Security check failed', 'collection-for-woo'));
+        }
+
+        $option_name = sanitize_text_field(wp_unslash($_GET['option']));
+        $nonce = sanitize_text_field(wp_unslash($_GET['mcd_create_single_page_nonce']));
+
+        if (!wp_verify_nonce($nonce, 'mcd_create_single_page_' . $option_name)) {
+            wp_die(__('Security check failed', 'collection-for-woo'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action', 'collection-for-woo'));
+        }
+
+        $result = $this->create_or_select_page($option_name, true);
+        $status = $result['status'];
+
+        $redirect_url = add_query_arg(
+            array(
+                'page' => 'marble-collection-settings',
+                'mcd_page_action' => $status,
+                'mcd_page_option' => $option_name
+            ),
+            admin_url('admin.php')
+        );
+
+        wp_redirect($redirect_url);
+        exit;
+    }
+
+    /**
+     * Get default pages map
+     */
+    private function get_page_defaults() {
+        return array(
+            'mcd_collection_page' => array(
+                'title' => 'All Collections Gallery',
+                'slug' => 'collection-gallery',
+                'content' => '[marble_collection]'
+            ),
+            'mcd_collection_page_old' => array(
+                'title' => 'All Collections Gallery',
+                'slug' => 'collection-gallery',
+                'content' => '[marble_collection]'
+            ),
+            'mcd_quartz_page' => array(
+                'title' => 'Quartz Gallery',
+                'slug' => 'quartz-gallery',
+                'content' => '[marble_collection category="quartz"]'
+            ),
+            'mcd_marble_page' => array(
+                'title' => 'Marble Gallery',
+                'slug' => 'marble-gallery',
+                'content' => '[marble_collection category="marble"]'
+            ),
+            'mcd_granite_page' => array(
+                'title' => 'Granite Gallery',
+                'slug' => 'granite-gallery',
+                'content' => '[marble_collection category="granite"]'
+            ),
+            'mcd_european_page' => array(
+                'title' => 'European Gallery',
+                'slug' => 'european-gallery',
+                'content' => '[marble_collection category="european"]'
+            ),
+            'mcd_onyx_page' => array(
+                'title' => 'Onyx Gallery',
+                'slug' => 'onyx-gallery',
+                'content' => '[marble_collection category="onyx"]'
+            ),
+            'mcd_sink_page' => array(
+                'title' => 'Sink Gallery',
+                'slug' => 'sink-gallery',
+                'content' => '[marble_collection category="sink"]'
+            )
+        );
+    }
+
+    /**
+     * Create or select a default page for a given option
+     */
+    private function create_or_select_page($option_name, $save_option = false) {
+        $page_defaults = $this->get_page_defaults();
+
+        if (!isset($page_defaults[$option_name])) {
+            return array('status' => 'failed', 'id' => 0);
+        }
+
+        $defaults = $page_defaults[$option_name];
+        $slug = sanitize_title($defaults['slug']);
+        $existing = get_page_by_path($slug);
+
+        if ($existing) {
+            if ($save_option) {
+                update_option($option_name, $existing->ID);
+            }
+            return array('status' => 'exists', 'id' => $existing->ID);
+        }
+
+        $page_id = wp_insert_post(
+            array(
+                'post_title' => $defaults['title'],
+                'post_name' => $slug,
+                'post_content' => $defaults['content'],
+                'post_status' => 'publish',
+                'post_type' => 'page',
+                'post_author' => get_current_user_id(),
+                'comment_status' => 'closed',
+                'ping_status' => 'closed'
+            ),
+            true
+        );
+
+        if ($page_id && !is_wp_error($page_id)) {
+            update_post_meta($page_id, '_mcd_auto_created', true);
+            update_post_meta($page_id, '_mcd_created_date', current_time('mysql'));
+            clean_post_cache($page_id);
+            if ($save_option) {
+                update_option($option_name, $page_id);
+            }
+            return array('status' => 'created', 'id' => $page_id);
+        }
+
+        return array('status' => 'failed', 'id' => 0);
+    }
     
     /**
      * Handle page creation
@@ -1479,9 +1763,26 @@ class MCD_Admin_Settings {
         
         // Load auto page creator
         require_once MCD_PLUGIN_DIR . 'includes/auto-page-creator.php';
+
+        $allowed_groups = array('gta_pages', 'gallery_pages');
+        $groups = isset($_POST['mcd_create_groups']) ? (array) $_POST['mcd_create_groups'] : array();
+        $groups = array_values(array_intersect($allowed_groups, array_map('sanitize_text_field', $groups)));
+
+        if (empty($groups)) {
+            $redirect_url = add_query_arg(
+                array(
+                    'page' => 'marble-collection-settings',
+                    'pages_created' => 'no_selection'
+                ),
+                admin_url('admin.php')
+            );
+
+            wp_redirect($redirect_url);
+            exit;
+        }
         
-        // Create all pages (they are saved to database automatically)
-        $pages = MCD_Auto_Page_Creator::create_all_pages();
+        // Create selected pages (they are saved to database automatically)
+        $pages = MCD_Auto_Page_Creator::create_pages($groups);
         
         // Auto-link pages to settings
         MCD_Auto_Page_Creator::auto_link_pages($pages);

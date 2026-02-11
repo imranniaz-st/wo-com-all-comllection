@@ -155,6 +155,9 @@ class Marble_Collection_Display {
      */
     public function enqueue_scripts() {
         $collection_page_id = get_option('mcd_collection_page');
+        if (!$collection_page_id) {
+            $collection_page_id = get_option('mcd_collection_page_old');
+        }
         $should_enqueue = false;
         
         // Check if on collection page or has shortcode
